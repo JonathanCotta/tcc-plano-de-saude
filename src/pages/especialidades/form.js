@@ -4,23 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Paper, Box, Divider, TextField, Grid, Button } from '@mui/material';
 
 const formConfigByAction = {
-    view: {
-        title: 'Visualizar',
-        fieldsDisable: true,
-        saveEnabled: false
-    },
     edit: {
         title: 'Editar',
         fieldsDisable: false,
         saveEnabled: true
     },
     add: {
-        title: 'Criar',
-        fieldsDisable: false,
-        saveEnabled: true
-    },
-    remove: {
-        title: 'Remover',
+        title: 'Nova',
         fieldsDisable: false,
         saveEnabled: true
     }
@@ -46,12 +36,12 @@ const EspecialidadeForm = (props) => {
 
     return (
         <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-            <Grid item xs={6}>
+            <Grid item xs={12}>
                 <Typography variant="h3">Especialidade</Typography>
                 <Divider />
             </Grid>
-            <Grid item xs={6} />
-            <Grid item xs={4} sx={{ mb: -2.25 }}>
+
+            <Grid item xs={5} sx={{ mb: -2.25 }}>
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                     <Typography variant="h5">{formConfig.title}</Typography>
                     <Box component="form" autoComplete="off" style={{ marginTop: 40 }}>
@@ -59,21 +49,27 @@ const EspecialidadeForm = (props) => {
                             <Grid item xs={12}>
                                 <TextField id="name" label="Nome" variant="standard" disabled={formConfig.fieldsDisable} />
                             </Grid>
-                            <Grid item xs={6} />
-                            <Grid xs={6} container item style={{ marginTop: 70 }}>
-                                <Grid item xs={6}>
-                                    {formConfig.saveEnabled && <Button variant="contained">Salvar</Button>}
+
+                            <Grid
+                                xs={12}
+                                container
+                                item
+                                style={{ marginTop: 70 }}
+                                alignItems="flex-end"
+                                justifyContent="flex-end"
+                                direction="row"
+                                columnSpacing={1}
+                            >
+                                <Grid item>{formConfig.saveEnabled && <Button variant="contained">Salvar</Button>}</Grid>
+                                <Grid item>
+                                    <Button variant="contained" color="error">
+                                        Remover
+                                    </Button>
                                 </Grid>
-                                <Grid item xs={6}>
-                                    {formConfig.saveEnabled ? (
-                                        <Button variant="outlined" color="secondary" onClick={handleGoBackClick}>
-                                            Cancelar
-                                        </Button>
-                                    ) : (
-                                        <Button variant="contained" onClick={handleGoBackClick}>
-                                            voltar
-                                        </Button>
-                                    )}
+                                <Grid item>
+                                    <Button variant="outlined" color="secondary" onClick={handleGoBackClick}>
+                                        Cancelar
+                                    </Button>
                                 </Grid>
                             </Grid>
                         </Grid>

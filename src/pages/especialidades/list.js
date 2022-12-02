@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Typography, Paper, Divider, Grid, styled, Button } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
 
 const rows = [
     { id: 1, name: 'Hello' },
@@ -10,8 +10,8 @@ const rows = [
 ];
 
 const columns = [
-    { field: 'id', headerName: 'Id', width: 200, sortable: false },
-    { field: 'name', headerName: 'Nome', width: 400 }
+    { field: 'id', headerName: 'Id', sortable: false, minWidth: 100 },
+    { field: 'name', headerName: 'Nome', minWidth: 450 }
 ];
 
 // eslint-disable-next-line no-unused-vars
@@ -21,17 +21,36 @@ const EspecialidadeListStyle = styled('div')((_EspecialidadeList) => ({
         color: '#fff',
         fontSize: 14
     },
-    '.MuiDataGrid-virtualScroller': {
-        backgroundColor: '#f2f2f2'
+    '.MuiDataGrid-cell:focus': {
+        outline: 'none'
+    },
+    '.MuiDataGrid-cell:selected': {
+        outline: 'none'
     }
 }));
 
+function CustomToolbar() {
+    return (
+        <GridToolbarContainer>
+            <Grid container>
+                <Grid item xs={3}>
+                    <GridToolbarFilterButton />
+                </Grid>
+                <Grid item xs={4} />
+                <Grid item xs={5}>
+                    <GridToolbarQuickFilter />
+                </Grid>
+            </Grid>
+        </GridToolbarContainer>
+    );
+}
+
 // eslint-disable-next-line no-unused-vars
 const EspecialidadeList = (_props) => {
-    const [selectedRow, setSelectedRow] = useState();
+    const navigate = useNavigate();
 
     const handleRowClick = (tableEvent) => {
-        setSelectedRow(tableEvent.id);
+        return navigate(`/especialidade/editar/${tableEvent.id}`);
     };
 
     return (
@@ -41,62 +60,24 @@ const EspecialidadeList = (_props) => {
                     <Typography variant="h3">Especialidades</Typography>
                     <Divider />
                 </Grid>
-
-                <Grid item xs={8} sx={{ mb: -2.25 }}>
+                <Grid item xs={6} sx={{ mb: -2.25 }}>
                     <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                         <Grid container rowSpacing={4}>
                             <Grid item xs={12}>
-                                <Typography variant="h3">Especialidades</Typography>
+                                <Button variant="outlined" size="small" component={Link} to="/especialidade/criar">
+                                    Criar
+                                </Button>
                             </Grid>
 
-                            <Grid container item xs={12} columnSpacing={1}>
-                                <Grid item>
-                                    <Button variant="outlined" size="small" component={Link} to="/especialidade/criar">
-                                        Criar
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        variant="outlined"
-                                        color="success"
-                                        size="small"
-                                        component={Link}
-                                        to={`/especialidade/visualizar/${selectedRow}`}
-                                    >
-                                        Visualizar
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        color="success"
-                                        component={Link}
-                                        to={`/especialidade/editar/${selectedRow}`}
-                                    >
-                                        Editar
-                                    </Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button
-                                        variant="outlined"
-                                        size="small"
-                                        color="error"
-                                        component={Link}
-                                        to={`/especialidade/remover/${selectedRow}`}
-                                    >
-                                        Remover
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12} style={{ height: 480, width: '100%' }}>
+                            <Grid item xs={12} style={{ height: 480 }}>
                                 <DataGrid
                                     rows={rows}
                                     columns={columns}
                                     pageSize={10}
-                                    onRowClick={handleRowClick}
-                                    components={{ Toolbar: GridToolbar }}
+                                    onRowDoubleClick={handleRowClick}
+                                    components={{ Toolbar: CustomToolbar }}
                                     disableColumnSelector
+                                    style={{ with: '100%' }}
                                     componentsProps={{
                                         toolbar: {
                                             showQuickFilter: true,
