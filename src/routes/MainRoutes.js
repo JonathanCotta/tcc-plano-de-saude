@@ -31,16 +31,8 @@ const MainRoutes = {
             element: <EspecialidadeForm formAction="add" />
         },
         {
-            path: '/especialidade/visualizar/:id',
-            element: <EspecialidadeForm formAction="view" />
-        },
-        {
             path: '/especialidade/editar/:id',
             element: <EspecialidadeForm formAction="edit" />
-        },
-        {
-            path: '/especialidade/remover/:id',
-            element: <EspecialidadeForm formAction="remove" />
         }
     ]
 };
