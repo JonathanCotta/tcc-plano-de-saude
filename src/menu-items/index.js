@@ -1,10 +1,11 @@
 // project import
 import pages from './pages';
+import especialidades from './especialidades';
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-    items: [pages]
+    items: [pages, especialidades]
 };
 
 export default menuItems;
