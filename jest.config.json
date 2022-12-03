@@ -1,0 +1,5 @@
+{
+  "verbose": true,
+  "maxConcurrency": 10,
+  "transform": {}
+}
