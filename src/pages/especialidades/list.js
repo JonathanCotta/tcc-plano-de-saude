@@ -17,7 +17,7 @@ const columns = [
 // eslint-disable-next-line no-unused-vars
 const EspecialidadeListStyle = styled('div')((_EspecialidadeList) => ({
     '.MuiDataGrid-columnHeaders': {
-        backgroundColor: '#212121',
+        backgroundColor: '#4d4d4d',
         color: '#fff',
         fontSize: 14
     },
