@@ -9,8 +9,7 @@ import {
     TextField,
     Grid,
     Button,
-    FormControl,
-    InputLabel
+    FormControl
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
