@@ -25,7 +25,13 @@ import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 
 // assets
-import { BellOutlined, CloseOutlined, GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+    BellOutlined,
+    CloseOutlined,
+    GiftOutlined,
+    MessageOutlined,
+    SettingOutlined
+} from '@ant-design/icons';
 
 // sx styles
 const avatarSX = {
@@ -132,7 +138,10 @@ const Notification = () => {
                                             '& .MuiListItemButton-root': {
                                                 py: 0.5,
                                                 '& .MuiAvatar-root': avatarSX,
-                                                '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
+                                                '& .MuiListItemSecondaryAction-root': {
+                                                    ...actionSX,
+                                                    position: 'relative'
+                                                }
                                             }
                                         }}
                                     >
@@ -151,7 +160,10 @@ const Notification = () => {
                                                 primary={
                                                     <Typography variant="h6">
                                                         It&apos;s{' '}
-                                                        <Typography component="span" variant="subtitle1">
+                                                        <Typography
+                                                            component="span"
+                                                            variant="subtitle1"
+                                                        >
                                                             Cristina danny&apos;s
                                                         </Typography>{' '}
                                                         birthday today.
@@ -180,7 +192,10 @@ const Notification = () => {
                                             <ListItemText
                                                 primary={
                                                     <Typography variant="h6">
-                                                        <Typography component="span" variant="subtitle1">
+                                                        <Typography
+                                                            component="span"
+                                                            variant="subtitle1"
+                                                        >
                                                             Aida Burg
                                                         </Typography>{' '}
                                                         commented your post.
@@ -210,7 +225,10 @@ const Notification = () => {
                                                 primary={
                                                     <Typography variant="h6">
                                                         Your Profile is Complete &nbsp;
-                                                        <Typography component="span" variant="subtitle1">
+                                                        <Typography
+                                                            component="span"
+                                                            variant="subtitle1"
+                                                        >
                                                             60%
                                                         </Typography>{' '}
                                                     </Typography>
@@ -238,11 +256,17 @@ const Notification = () => {
                                             <ListItemText
                                                 primary={
                                                     <Typography variant="h6">
-                                                        <Typography component="span" variant="subtitle1">
+                                                        <Typography
+                                                            component="span"
+                                                            variant="subtitle1"
+                                                        >
                                                             Cristina Danny
                                                         </Typography>{' '}
                                                         invited to join{' '}
-                                                        <Typography component="span" variant="subtitle1">
+                                                        <Typography
+                                                            component="span"
+                                                            variant="subtitle1"
+                                                        >
                                                             Meeting.
                                                         </Typography>
                                                     </Typography>
@@ -256,7 +280,9 @@ const Notification = () => {
                                             </ListItemSecondaryAction>
                                         </ListItemButton>
                                         <Divider />
-                                        <ListItemButton sx={{ textAlign: 'center', py: `${12}px !important` }}>
+                                        <ListItemButton
+                                            sx={{ textAlign: 'center', py: `${12}px !important` }}
+                                        >
                                             <ListItemText
                                                 primary={
                                                     <Typography variant="h6" color="primary">

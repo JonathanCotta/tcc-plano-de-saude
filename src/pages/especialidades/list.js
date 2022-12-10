@@ -1,7 +1,12 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Typography, Paper, Divider, Grid, styled, Button } from '@mui/material';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridToolbarQuickFilter } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarFilterButton,
+    GridToolbarQuickFilter
+} from '@mui/x-data-grid';
 
 const rows = [
     { id: 1, name: 'Hello' },
@@ -64,7 +69,12 @@ const EspecialidadeList = (_props) => {
                     <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                         <Grid container rowSpacing={4}>
                             <Grid item xs={12}>
-                                <Button variant="outlined" size="small" component={Link} to="/especialidade/criar">
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    component={Link}
+                                    to="/especialidade/criar"
+                                >
                                     Criar
                                 </Button>
                             </Grid>

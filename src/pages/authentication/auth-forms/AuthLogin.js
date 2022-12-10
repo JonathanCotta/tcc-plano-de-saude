@@ -52,7 +52,10 @@ const AuthLogin = () => {
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    email: Yup.string()
+                        .email('Must be a valid email')
+                        .max(255)
+                        .required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -66,7 +69,15 @@ const AuthLogin = () => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({
+                    errors,
+                    handleBlur,
+                    handleChange,
+                    handleSubmit,
+                    isSubmitting,
+                    touched,
+                    values
+                }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
@@ -84,7 +95,10 @@ const AuthLogin = () => {
                                         error={Boolean(touched.email && errors.email)}
                                     />
                                     {touched.email && errors.email && (
-                                        <FormHelperText error id="standard-weight-helper-text-email-login">
+                                        <FormHelperText
+                                            error
+                                            id="standard-weight-helper-text-email-login"
+                                        >
                                             {errors.email}
                                         </FormHelperText>
                                     )}
@@ -111,14 +125,21 @@ const AuthLogin = () => {
                                                     edge="end"
                                                     size="large"
                                                 >
-                                                    {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                                                    {showPassword ? (
+                                                        <EyeOutlined />
+                                                    ) : (
+                                                        <EyeInvisibleOutlined />
+                                                    )}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
                                         placeholder="Enter password"
                                     />
                                     {touched.password && errors.password && (
-                                        <FormHelperText error id="standard-weight-helper-text-password-login">
+                                        <FormHelperText
+                                            error
+                                            id="standard-weight-helper-text-password-login"
+                                        >
                                             {errors.password}
                                         </FormHelperText>
                                     )}
@@ -126,20 +147,34 @@ const AuthLogin = () => {
                             </Grid>
 
                             <Grid item xs={12} sx={{ mt: -1 }}>
-                                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    spacing={2}
+                                >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
                                                 checked={checked}
-                                                onChange={(event) => setChecked(event.target.checked)}
+                                                onChange={(event) =>
+                                                    setChecked(event.target.checked)
+                                                }
                                                 name="checked"
                                                 color="primary"
                                                 size="small"
                                             />
                                         }
-                                        label={<Typography variant="h6">Keep me sign in</Typography>}
+                                        label={
+                                            <Typography variant="h6">Keep me sign in</Typography>
+                                        }
                                     />
-                                    <Link variant="h6" component={RouterLink} to="" color="text.primary">
+                                    <Link
+                                        variant="h6"
+                                        component={RouterLink}
+                                        to=""
+                                        color="text.primary"
+                                    >
                                         Forgot Password?
                                     </Link>
                                 </Stack>

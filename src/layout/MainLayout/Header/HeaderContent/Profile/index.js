@@ -3,7 +3,20 @@ import React, { useRef, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, ButtonBase, CardContent, ClickAwayListener, Grid, Paper, Popper, Stack, Tab, Tabs, Typography } from '@mui/material';
+import {
+    Avatar,
+    Box,
+    ButtonBase,
+    CardContent,
+    ClickAwayListener,
+    Grid,
+    Paper,
+    Popper,
+    Stack,
+    Tab,
+    Tabs,
+    Typography
+} from '@mui/material';
 
 // project import
 import MainCard from 'components/MainCard';
@@ -17,7 +30,13 @@ import { UserOutlined } from '@ant-design/icons';
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
     return (
-        <div role="tabpanel" hidden={value !== index} id={`profile-tabpanel-${index}`} aria-labelledby={`profile-tab-${index}`} {...other}>
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`profile-tabpanel-${index}`}
+            aria-labelledby={`profile-tab-${index}`}
+            {...other}
+        >
             {value === index && children}
         </div>
     );
@@ -121,13 +140,29 @@ const Profile = () => {
                                 <ClickAwayListener onClickAway={handleClose}>
                                     <MainCard elevation={0} border={false} content={false}>
                                         <CardContent sx={{ px: 2.5, pt: 3 }}>
-                                            <Grid container justifyContent="space-between" alignItems="center">
+                                            <Grid
+                                                container
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                            >
                                                 <Grid item>
-                                                    <Stack direction="row" spacing={1.25} alignItems="center">
-                                                        <Avatar alt="profile user" sx={{ width: 32, height: 32 }} />
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={1.25}
+                                                        alignItems="center"
+                                                    >
+                                                        <Avatar
+                                                            alt="profile user"
+                                                            sx={{ width: 32, height: 32 }}
+                                                        />
                                                         <Stack>
-                                                            <Typography variant="h6">John Doe</Typography>
-                                                            <Typography variant="body2" color="textSecondary">
+                                                            <Typography variant="h6">
+                                                                John Doe
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body2"
+                                                                color="textSecondary"
+                                                            >
                                                                 Exemplo Role
                                                             </Typography>
                                                         </Stack>
@@ -137,7 +172,9 @@ const Profile = () => {
                                         </CardContent>
                                         {open && (
                                             <>
-                                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                                <Box
+                                                    sx={{ borderBottom: 1, borderColor: 'divider' }}
+                                                >
                                                     <Tabs
                                                         variant="fullWidth"
                                                         value={value}
@@ -152,13 +189,24 @@ const Profile = () => {
                                                                 alignItems: 'center',
                                                                 textTransform: 'capitalize'
                                                             }}
-                                                            icon={<UserOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
+                                                            icon={
+                                                                <UserOutlined
+                                                                    style={{
+                                                                        marginBottom: 0,
+                                                                        marginRight: '10px'
+                                                                    }}
+                                                                />
+                                                            }
                                                             label="Profile"
                                                             {...a11yProps(0)}
                                                         />
                                                     </Tabs>
                                                 </Box>
-                                                <TabPanel value={value} index={0} dir={theme.direction}>
+                                                <TabPanel
+                                                    value={value}
+                                                    index={0}
+                                                    dir={theme.direction}
+                                                >
                                                     <ProfileTab handleLogout={handleLogout} />
                                                 </TabPanel>
                                             </>

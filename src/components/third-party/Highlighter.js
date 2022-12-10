@@ -23,9 +23,18 @@ const Highlighter = ({ children }) => {
         <Box sx={{ position: 'relative' }}>
             <CardActions sx={{ justifyContent: 'flex-end', p: 1, mb: highlight ? 1 : 0 }}>
                 <Box sx={{ display: 'flex', position: 'inherit', right: 0, top: 6 }}>
-                    <CopyToClipboard text={reactElementToJSXString(children, { showFunctions: true, maxInlineAttributesLineLength: 100 })}>
+                    <CopyToClipboard
+                        text={reactElementToJSXString(children, {
+                            showFunctions: true,
+                            maxInlineAttributesLineLength: 100
+                        })}
+                    >
                         <Tooltip title="Copy the source" placement="top-end">
-                            <IconButton color="secondary" size="small" sx={{ fontSize: '0.875rem' }}>
+                            <IconButton
+                                color="secondary"
+                                size="small"
+                                sx={{ fontSize: '0.875rem' }}
+                            >
                                 <CopyOutlined />
                             </IconButton>
                         </Tooltip>

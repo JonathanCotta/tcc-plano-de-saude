@@ -49,8 +49,14 @@ const MainCard = forwardRef(
                     ...sx,
                     border: border ? '1px solid' : 'none',
                     borderRadius: 2,
-                    borderColor: theme.palette.mode === 'dark' ? theme.palette.divider : theme.palette.grey.A800,
-                    boxShadow: boxShadow && (!border || theme.palette.mode === 'dark') ? shadow || theme.customShadows.z1 : 'inherit',
+                    borderColor:
+                        theme.palette.mode === 'dark'
+                            ? theme.palette.divider
+                            : theme.palette.grey.A800,
+                    boxShadow:
+                        boxShadow && (!border || theme.palette.mode === 'dark')
+                            ? shadow || theme.customShadows.z1
+                            : 'inherit',
                     ':hover': {
                         boxShadow: boxShadow ? shadow || theme.customShadows.z1 : 'inherit'
                     },
@@ -64,10 +70,19 @@ const MainCard = forwardRef(
             >
                 {/* card header and action */}
                 {!darkTitle && title && (
-                    <CardHeader sx={headerSX} titleTypographyProps={{ variant: 'subtitle1' }} title={title} action={secondary} />
+                    <CardHeader
+                        sx={headerSX}
+                        titleTypographyProps={{ variant: 'subtitle1' }}
+                        title={title}
+                        action={secondary}
+                    />
                 )}
                 {darkTitle && title && (
-                    <CardHeader sx={headerSX} title={<Typography variant="h3">{title}</Typography>} action={secondary} />
+                    <CardHeader
+                        sx={headerSX}
+                        title={<Typography variant="h3">{title}</Typography>}
+                        action={secondary}
+                    />
                 )}
 
                 {/* content & header divider */}

@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Dialog, Typography, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {
+    Button,
+    Dialog,
+    Typography,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
+} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { closeDialog } from '../store/reducers/dialog';
@@ -25,7 +33,9 @@ export default function AlertDialog() {
                     <Typography>Confirmação</Typography>
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">{dialogState.message}</DialogContentText>
+                    <DialogContentText id="alert-dialog-description">
+                        {dialogState.message}
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={handleClose}>

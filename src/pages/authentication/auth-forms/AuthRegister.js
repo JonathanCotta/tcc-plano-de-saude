@@ -66,7 +66,10 @@ const AuthRegister = () => {
                 validationSchema={Yup.object().shape({
                     firstname: Yup.string().max(255).required('First Name is required'),
                     lastname: Yup.string().max(255).required('Last Name is required'),
-                    email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+                    email: Yup.string()
+                        .email('Must be a valid email')
+                        .max(255)
+                        .required('Email is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -81,7 +84,15 @@ const AuthRegister = () => {
                     }
                 }}
             >
-                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+                {({
+                    errors,
+                    handleBlur,
+                    handleChange,
+                    handleSubmit,
+                    isSubmitting,
+                    touched,
+                    values
+                }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={6}>
@@ -194,7 +205,11 @@ const AuthRegister = () => {
                                                     edge="end"
                                                     size="large"
                                                 >
-                                                    {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+                                                    {showPassword ? (
+                                                        <EyeOutlined />
+                                                    ) : (
+                                                        <EyeInvisibleOutlined />
+                                                    )}
                                                 </IconButton>
                                             </InputAdornment>
                                         }
@@ -210,7 +225,14 @@ const AuthRegister = () => {
                                 <FormControl fullWidth sx={{ mt: 2 }}>
                                     <Grid container spacing={2} alignItems="center">
                                         <Grid item>
-                                            <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
+                                            <Box
+                                                sx={{
+                                                    bgcolor: level?.color,
+                                                    width: 85,
+                                                    height: 8,
+                                                    borderRadius: '7px'
+                                                }}
+                                            />
                                         </Grid>
                                         <Grid item>
                                             <Typography variant="subtitle1" fontSize="0.75rem">

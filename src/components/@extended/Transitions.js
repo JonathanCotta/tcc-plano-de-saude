@@ -52,7 +52,14 @@ const Transitions = forwardRef(({ children, position, type, ...others }, ref) =>
 Transitions.propTypes = {
     children: PropTypes.node,
     type: PropTypes.oneOf(['grow', 'fade', 'collapse', 'slide', 'zoom']),
-    position: PropTypes.oneOf(['top-left', 'top-right', 'top', 'bottom-left', 'bottom-right', 'bottom'])
+    position: PropTypes.oneOf([
+        'top-left',
+        'top-right',
+        'top',
+        'bottom-left',
+        'bottom-right',
+        'bottom'
+    ])
 };
 
 Transitions.defaultProps = {
