@@ -9,28 +9,28 @@ const icons = {
 
 // ==============================|| MENU ITEMS - EXTRA especialidades ||============================== //
 
-const especialidades = {
-    id: 'especialidade',
-    title: 'Especialidades',
+const planos = {
+    id: 'plano',
+    title: 'Planos',
     type: 'group',
     children: [
         {
-            id: 'addEspecialidade',
+            id: 'addPlano',
             title: 'Criar',
             type: 'item',
-            url: '/especialidade/criar',
+            url: '/plano/criar',
             icon: icons.PlusCircleOutlined,
             target: false
         },
         {
-            id: 'listEspecialidades',
+            id: 'listPlanos',
             title: 'Listar',
             type: 'item',
-            url: '/especialidades',
+            url: '/planos',
             icon: icons.UnorderedListOutlined,
             target: false
         }
     ]
 };
 
-export default especialidades;
+export default planos;

@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Paper, Box, Divider, TextField, Grid, Button } from '@mui/material';
+import {
+    Typography,
+    Paper,
+    Box,
+    Divider,
+    TextField,
+    Grid,
+    Button,
+    FormControl,
+    InputLabel
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import { openDialog } from 'store/reducers/dialog';
@@ -45,7 +55,7 @@ const EspecialidadeForm = (props) => {
     };
 
     return (
-        <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+        <Grid container rowSpacing={4} columnSpacing={2}>
             <Grid item xs={12}>
                 <Typography variant="h3">Especialidade</Typography>
                 <Divider />
@@ -53,14 +63,17 @@ const EspecialidadeForm = (props) => {
             <Grid item xs={6} sx={{ mb: -2.25 }}>
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                     <Box component="form" autoComplete="off">
-                        <Grid container rowSpacing={4.5}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    id="name"
-                                    label="Nome"
-                                    variant="standard"
-                                    disabled={formConfig.fieldsDisable}
-                                />
+                        <Grid container rowSpacing={4}>
+                            <Grid item xs={6}>
+                                <FormControl fullWidth required>
+                                    <TextField
+                                        id="name"
+                                        label="Nome"
+                                        variant="standard"
+                                        required
+                                        disabled={formConfig.fieldsDisable}
+                                    />
+                                </FormControl>
                             </Grid>
 
                             <Grid
