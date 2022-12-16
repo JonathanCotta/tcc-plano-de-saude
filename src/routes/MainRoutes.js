@@ -10,9 +10,11 @@ const DashboardDefault = Loadable(lazy(() => import('pages/dashboard')));
 
 // render - especialidade
 const EspecialidadeForm = Loadable(lazy(() => import('pages/especialidades/form')));
-const EspecialidadeList = Loadable(lazy(() => import('pages/especialidades/list')));
+const EspecialidadesList = Loadable(lazy(() => import('pages/especialidades/list')));
 const PlanoForm = Loadable(lazy(() => import('pages/planos/form')));
-const PlanoList = Loadable(lazy(() => import('pages/planos/list')));
+const PlanosList = Loadable(lazy(() => import('pages/planos/list')));
+const ConveniadoForm = Loadable(lazy(() => import('pages/conveniados/form')));
+const ConveniadosList = Loadable(lazy(() => import('pages/conveniados/list')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -26,7 +28,7 @@ const MainRoutes = {
         },
         {
             path: '/especialidades',
-            element: <EspecialidadeList />
+            element: <EspecialidadesList />
         },
         {
             path: '/especialidade/criar',
@@ -38,7 +40,7 @@ const MainRoutes = {
         },
         {
             path: '/planos',
-            element: <PlanoList />
+            element: <PlanosList />
         },
         {
             path: '/plano/criar',
@@ -47,6 +49,18 @@ const MainRoutes = {
         {
             path: '/plano/editar/:id',
             element: <PlanoForm formAction="edit" />
+        },
+        {
+            path: '/conveniados',
+            element: <ConveniadosList />
+        },
+        {
+            path: '/conveniado/criar',
+            element: <ConveniadoForm formAction="add" />
+        },
+        {
+            path: '/conveniado/editar/:id',
+            element: <ConveniadoForm formAction="edit" />
         }
     ]
 };
