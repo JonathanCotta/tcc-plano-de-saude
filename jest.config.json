@@ -1,5 +1,9 @@
 {
-  "verbose": true,
-  "maxConcurrency": 10,
-  "transform": {}
+    "testEnvironment": "jsdom",
+    "verbose": true,
+    "maxConcurrency": 10,
+     "transformIgnorePatterns": [
+     "/node_modules/(?!(react-syntax-highlighter)/)"
+   ]
+   
 }
