@@ -5,7 +5,8 @@ import {
     DataGrid,
     GridToolbarContainer,
     GridToolbarFilterButton,
-    GridToolbarQuickFilter
+    GridToolbarQuickFilter,
+    ptBR
 } from '@mui/x-data-grid';
 
 const rows = [
@@ -86,6 +87,7 @@ const EspecialidadeList = (_props) => {
                                     pageSize={10}
                                     onRowDoubleClick={handleRowClick}
                                     components={{ Toolbar: CustomToolbar }}
+                                    localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                                     disableColumnSelector
                                     style={{ with: '100%' }}
                                     componentsProps={{
