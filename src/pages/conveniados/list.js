@@ -5,23 +5,47 @@ import {
     DataGrid,
     GridToolbarContainer,
     GridToolbarFilterButton,
-    GridToolbarQuickFilter
+    GridToolbarQuickFilter,
+    ptBR
 } from '@mui/x-data-grid';
 
 const rows = [
-    { id: 1, name: 'Hello', classificacao: 'Individual' },
-    { id: 2, name: 'DataGridPro', classificacao: 'Empresarial' },
-    { id: 3, name: 'MUI', classificacao: 'Empresarial' }
+    {
+        id: 1,
+        nome: 'Hello',
+        classificacao: 'Individual',
+        tipo: 'clinica',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro'
+    },
+    {
+        id: 2,
+        nome: 'DataGridPro',
+        classificacao: 'Empresarial',
+        tipo: 'clinica',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro'
+    },
+    {
+        id: 3,
+        nome: 'MUI',
+        classificacao: 'Empresarial',
+        tipo: 'clinica',
+        estado: 'RJ',
+        cidade: 'Rio de Janeiro'
+    }
 ];
 
 const columns = [
-    { field: 'id', headerName: 'Id', sortable: false, minWidth: 100 },
-    { field: 'name', headerName: 'Nome', minWidth: 230 },
-    { field: 'classificacao', headerName: 'Classificação', minWidth: 210 }
+    { field: 'id', headerName: 'Id', sortable: false, minWidth: 90 },
+    { field: 'nome', headerName: 'Nome', minWidth: 300 },
+    { field: 'tipo', headerName: 'Tipo', minWidth: 140 },
+    { field: 'estado', headerName: 'Estado', minWidth: 100 },
+    { field: 'cidade', headerName: 'Cidade', with: 210 }
 ];
 
 // eslint-disable-next-line no-unused-vars
-const PlanoListStyle = styled('div')((_PlanoList) => ({
+const ConveniadosListStyle = styled('div')((_ConveniadosList) => ({
     '.MuiDataGrid-columnHeaders': {
         backgroundColor: '#4d4d4d',
         color: '#fff',
@@ -52,21 +76,21 @@ function CustomToolbar() {
 }
 
 // eslint-disable-next-line no-unused-vars
-const PlanoList = (_props) => {
+const ConveniadosList = (_props) => {
     const navigate = useNavigate();
 
     const handleRowClick = (tableEvent) => {
-        return navigate(`/plano/editar/${tableEvent.id}`);
+        return navigate(`/conveniado/editar/${tableEvent.id}`);
     };
 
     return (
-        <PlanoListStyle>
+        <ConveniadosListStyle>
             <Grid container rowSpacing={4} columnSpacing={2}>
                 <Grid item xs={12}>
-                    <Typography variant="h3">Especialidades</Typography>
+                    <Typography variant="h3">Conveniados</Typography>
                     <Divider />
                 </Grid>
-                <Grid item xs={6} sx={{ mb: -2.25 }}>
+                <Grid item xs={8} sx={{ mb: -2.25 }}>
                     <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                         <Grid container rowSpacing={4}>
                             <Grid item xs={12}>
@@ -74,7 +98,7 @@ const PlanoList = (_props) => {
                                     variant="outlined"
                                     size="small"
                                     component={Link}
-                                    to="/especialidade/criar"
+                                    to="/conveniado/criar"
                                 >
                                     Criar
                                 </Button>
@@ -87,6 +111,7 @@ const PlanoList = (_props) => {
                                     pageSize={10}
                                     onRowDoubleClick={handleRowClick}
                                     components={{ Toolbar: CustomToolbar }}
+                                    localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                                     disableColumnSelector
                                     style={{ with: '100%' }}
                                     componentsProps={{
@@ -101,8 +126,8 @@ const PlanoList = (_props) => {
                     </Paper>
                 </Grid>
             </Grid>
-        </PlanoListStyle>
+        </ConveniadosListStyle>
     );
 };
 
-export default PlanoList;
+export default ConveniadosList;

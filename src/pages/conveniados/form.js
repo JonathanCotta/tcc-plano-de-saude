@@ -47,8 +47,6 @@ const formConfigByAction = {
     }
 };
 
-const atendimentos = ['Emergência', 'Ambulatório', 'Cirurgia', 'Exames', 'Clinico'];
-
 function getStyles(name, personName, theme) {
     return {
         fontWeight:
@@ -58,7 +56,7 @@ function getStyles(name, personName, theme) {
     };
 }
 
-const PlanoForm = (props) => {
+const ConveniadoForm = (props) => {
     const theme = useTheme();
     const { formAction } = props;
 
@@ -68,7 +66,8 @@ const PlanoForm = (props) => {
 
     const formConfig = formConfigByAction[formAction];
 
-    const [coberturaAtendimento, setCoberturaAtendimento] = useState([]);
+    const [especialidades, setEspecialidades] = useState([]);
+    const [planos, setPlanos] = useState([]);
 
     useEffect(() => {
         if (formAction !== 'add') {
@@ -84,13 +83,29 @@ const PlanoForm = (props) => {
         dispatch(openDialog({ message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE }));
     };
 
-    const handleClassificacaoSelectChange = () => {};
+    const handleTipoSelectChange = () => {};
 
-    const handleCoberturaAtendimentoChange = (event) => {
+    const handleEstadoSelectChange = () => {};
+
+    const handleCidadeSelectChange = () => {};
+
+    const handleTipoLogradouroSelectChange = () => {};
+
+    const handleEspecialidadeSelectChange = (event) => {
         const {
             target: { value }
         } = event;
-        setCoberturaAtendimento(
+        setEspecialidades(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value
+        );
+    };
+
+    const handlePlanosSelectChange = (event) => {
+        const {
+            target: { value }
+        } = event;
+        setPlanos(
             // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value
         );
@@ -99,14 +114,18 @@ const PlanoForm = (props) => {
     return (
         <Grid container rowSpacing={4} columnSpacing={2}>
             <Grid item xs={12}>
-                <Typography variant="h3">Plano</Typography>
+                <Typography variant="h3">Conveniado</Typography>
                 <Divider />
             </Grid>
-            <Grid item xs={6} sx={{ mb: -2.25 }}>
+            <Grid item xs={12} md={10}>
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                     <Box component="form" autoComplete="off">
                         <Grid container rowSpacing={4} columnSpacing={6}>
-                            <Grid item xs={5}>
+                            <Grid item xs={12} style={{ marginTop: 20 }}>
+                                <Typography variant="h4">Informações gerais</Typography>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
                                 <FormControl fullWidth>
                                     <TextField
                                         id="name"
@@ -118,16 +137,13 @@ const PlanoForm = (props) => {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={12} md={4}>
                                 <FormControl variant="standard" fullWidth required>
-                                    <InputLabel id="classificacao-select-label">
-                                        Classificação
-                                    </InputLabel>
+                                    <InputLabel id="tipo-select-label">Tipo</InputLabel>
                                     <Select
-                                        labelId="classificacao-select-label"
-                                        id="classificacao"
-                                        label="Classificação"
-                                        onChange={handleClassificacaoSelectChange}
+                                        labelId="tipo-select-label"
+                                        id="tipo"
+                                        onChange={handleTipoSelectChange}
                                     >
                                         <MenuItem value={'enfermaria'}>Enfermaria</MenuItem>
                                         <MenuItem value={'quartoCompartilhado'}>
@@ -139,11 +155,95 @@ const PlanoForm = (props) => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={5}>
+                            <Grid item xs={12} style={{ marginTop: 20 }}>
+                                <Typography variant="h4">Endereço</Typography>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <FormControl variant="standard" fullWidth required>
+                                    <InputLabel id="estado-select-label">Estado</InputLabel>
+                                    <Select
+                                        labelId="estado-select-label"
+                                        id="estado"
+                                        onChange={handleEstadoSelectChange}
+                                    >
+                                        <MenuItem value={'enfermaria'}>Enfermaria</MenuItem>
+                                        <MenuItem value={'quartoCompartilhado'}>
+                                            Quarto compartilhado
+                                        </MenuItem>
+                                        <MenuItem value={'quartoIndividual'}>
+                                            Quarto individual
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl variant="standard" fullWidth required>
+                                    <InputLabel id="cidade-select-label">Cidade</InputLabel>
+                                    <Select
+                                        labelId="cidade-select-label"
+                                        id="cidade"
+                                        onChange={handleCidadeSelectChange}
+                                    >
+                                        <MenuItem value={'enfermaria'}>Enfermaria</MenuItem>
+                                        <MenuItem value={'quartoCompartilhado'}>
+                                            Quarto compartilhado
+                                        </MenuItem>
+                                        <MenuItem value={'quartoIndividual'}>
+                                            Quarto individual
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl variant="standard" fullWidth required>
+                                    <InputLabel id="tipo-logradouro-select-label">
+                                        Tipo Logradouro
+                                    </InputLabel>
+                                    <Select
+                                        labelId="tipo-logradouro-select-label"
+                                        id="tipologradouro"
+                                        onChange={handleTipoLogradouroSelectChange}
+                                    >
+                                        <MenuItem value={'enfermaria'}>Enfermaria</MenuItem>
+                                        <MenuItem value={'quartoCompartilhado'}>
+                                            Quarto compartilhado
+                                        </MenuItem>
+                                        <MenuItem value={'quartoIndividual'}>
+                                            Quarto individual
+                                        </MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        id="logradouro"
+                                        label="Logradouro"
+                                        type="text"
+                                        variant="standard"
+                                        required
+                                        disabled={formConfig.fieldsDisable}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        id="complemento"
+                                        label="Complemento"
+                                        type="text"
+                                        variant="standard"
+                                        required
+                                        disabled={formConfig.fieldsDisable}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={2}>
                                 <FormControl>
                                     <TextField
-                                        id="qtdConsultas"
-                                        label="Numero de Consultas"
+                                        id="numeroEndereco"
+                                        label="Numero"
                                         type="number"
                                         variant="standard"
                                         size="normal"
@@ -152,30 +252,66 @@ const PlanoForm = (props) => {
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={6}>
-                                <FormControl variant="standard" required>
+                            <Grid item xs={12} style={{ marginTop: 20 }}>
+                                <Typography variant="h4">Contato</Typography>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <FormControl>
                                     <TextField
-                                        id="examesAno"
-                                        label="Exames por ano"
+                                        id="telefone1"
+                                        label="Telefone 01"
                                         type="number"
+                                        variant="standard"
+                                        size="normal"
+                                        required
+                                        disabled={formConfig.fieldsDisable}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <FormControl>
+                                    <TextField
+                                        id="telefone2"
+                                        label="Telefone 02"
+                                        type="number"
+                                        variant="standard"
+                                        size="normal"
+                                        disabled={formConfig.fieldsDisable}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={3}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        id="email"
+                                        label="E-mail"
+                                        type="text"
                                         variant="standard"
                                         required
                                         disabled={formConfig.fieldsDisable}
                                     />
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={9.5}>
+                            <Grid item xs={12} style={{ marginTop: 20 }}>
+                                <Typography variant="h4">Atendimento</Typography>
+                                <Divider />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
                                 <FormControl fullWidth required>
-                                    <InputLabel id="cobertura-atendimentos-select-label">
-                                        Atendimetnos cobertos
+                                    <InputLabel
+                                        id="planos-select-label"
+                                        style={{ paddingTop: 0.4 }}
+                                    >
+                                        Planos
                                     </InputLabel>
                                     <Select
-                                        labelId="cobertura-atendimentos-select-label"
-                                        id="coberturaAtendimento"
-                                        label="Cobertura de Atentimentos"
+                                        labelId="planos-select-label"
+                                        id="planos"
+                                        label="Planos"
                                         multiple
-                                        onChange={handleCoberturaAtendimentoChange}
-                                        value={coberturaAtendimento}
+                                        onChange={handlePlanosSelectChange}
+                                        value={planos}
                                         MenuProps={MenuProps}
                                         input={
                                             <OutlinedInput id="select-multiple-chip" label="Chip" />
@@ -190,11 +326,52 @@ const PlanoForm = (props) => {
                                             </Box>
                                         )}
                                     >
-                                        {atendimentos.map((name) => (
+                                        {planos.map((name) => (
                                             <MenuItem
                                                 key={name}
                                                 value={name}
-                                                style={getStyles(name, coberturaAtendimento, theme)}
+                                                style={getStyles(name, especialidades, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth required>
+                                    <InputLabel
+                                        id="especialidades-select-label"
+                                        style={{ paddingTop: 0.4 }}
+                                    >
+                                        Especialidades
+                                    </InputLabel>
+                                    <Select
+                                        labelId="especialidades-select-label"
+                                        id="especialidades"
+                                        label="Especialidades"
+                                        multiple
+                                        onChange={handleEspecialidadeSelectChange}
+                                        value={especialidades}
+                                        MenuProps={MenuProps}
+                                        input={
+                                            <OutlinedInput id="select-multiple-chip" label="Chip" />
+                                        }
+                                        renderValue={(selected) => (
+                                            <Box
+                                                sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
+                                            >
+                                                {selected.map((value) => (
+                                                    <Chip key={value} label={value} />
+                                                ))}
+                                            </Box>
+                                        )}
+                                    >
+                                        {especialidades.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, especialidades, theme)}
                                             >
                                                 {name}
                                             </MenuItem>
@@ -247,8 +424,8 @@ const PlanoForm = (props) => {
     );
 };
 
-PlanoForm.propTypes = {
+ConveniadoForm.propTypes = {
     formAction: PropTypes.string
 };
 
-export default PlanoForm;
+export default ConveniadoForm;
