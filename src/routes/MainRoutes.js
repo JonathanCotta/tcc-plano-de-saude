@@ -17,6 +17,8 @@ const ConveniadoForm = Loadable(lazy(() => import('pages/conveniados/form')));
 const ConveniadosList = Loadable(lazy(() => import('pages/conveniados/list')));
 const ProfissionalForm = Loadable(lazy(() => import('pages/profissionais/form')));
 const ProfissionaisList = Loadable(lazy(() => import('pages/profissionais/list')));
+const AssociadoForm = Loadable(lazy(() => import('pages/associados/form')));
+const AssociadosList = Loadable(lazy(() => import('pages/associados/list')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -75,6 +77,18 @@ const MainRoutes = {
         {
             path: '/profissional/editar/:id',
             element: <ProfissionalForm formAction="edit" />
+        },
+        {
+            path: '/associados',
+            element: <AssociadosList />
+        },
+        {
+            path: '/associado/criar',
+            element: <AssociadoForm formAction="add" />
+        },
+        {
+            path: '/associado/editar/:id',
+            element: <AssociadoForm formAction="edit" />
         }
     ]
 };
