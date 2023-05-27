@@ -1,4 +1,3 @@
-import { initializeApp } from 'firebase/app';
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -6,10 +5,9 @@ import {
     onAuthStateChanged
 } from 'firebase/auth';
 
-import config from '../config';
+import fireBaseApp from '../fireBaseApp';
 
-const app = initializeApp(config.firebaseConfig);
-const auth = getAuth(app);
+const auth = getAuth(fireBaseApp);
 
 export const newUserLogin = async (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
