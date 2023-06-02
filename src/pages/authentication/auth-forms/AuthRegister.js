@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-
-// material-ui
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
     Box,
     Button,
@@ -16,23 +14,24 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
-// project import
 import AnimateButton from 'components/@extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
+import auth from '../../../services/fireBaseAuth';
 
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
+    const navigate = useNavigate();
+    const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
     const [level, setLevel] = useState();
     const [showPassword, setShowPassword] = useState(false);
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -54,16 +53,11 @@ const AuthRegister = () => {
         <>
             <Formik
                 initialValues={{
-                    firstname: '',
-                    lastname: '',
                     email: '',
-                    company: '',
                     password: '',
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    firstname: Yup.string().max(255).required('First Name is required'),
-                    lastname: Yup.string().max(255).required('Last Name is required'),
                     email: Yup.string()
                         .email('Must be a valid email')
                         .max(255)
@@ -72,8 +66,19 @@ const AuthRegister = () => {
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                     try {
-                        setStatus({ success: false });
-                        setSubmitting(false);
+                        const { email, password } = values;
+                        const authRequest = await createUserWithEmailAndPassword(email, password);
+
+                        if (authRequest) {
+                            const { user } = authRequest;
+                            setStatus({ success: true });
+                            setSubmitting(true);
+                            navigate(`/associado/editar/${user.uid}`);
+                        } else {
+                            setStatus({ success: false });
+                            setErrors({ submit: 'Erro no cadastro' });
+                            setSubmitting(false);
+                        }
                     } catch (err) {
                         console.error(err);
                         setStatus({ success: false });
@@ -93,50 +98,6 @@ const AuthRegister = () => {
                 }) => (
                     <form noValidate onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12} md={6}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
-                                    <OutlinedInput
-                                        id="firstname-login"
-                                        type="firstname"
-                                        value={values.firstname}
-                                        name="firstname"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="John"
-                                        fullWidth
-                                        error={Boolean(touched.firstname && errors.firstname)}
-                                    />
-                                    {touched.firstname && errors.firstname && (
-                                        <FormHelperText error id="helper-text-firstname-signup">
-                                            {errors.firstname}
-                                        </FormHelperText>
-                                    )}
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <Stack spacing={1}>
-                                    <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                                    <OutlinedInput
-                                        fullWidth
-                                        error={Boolean(touched.lastname && errors.lastname)}
-                                        id="lastname-signup"
-                                        type="lastname"
-                                        value={values.lastname}
-                                        name="lastname"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        placeholder="Doe"
-                                        inputProps={{}}
-                                    />
-                                    {touched.lastname && errors.lastname && (
-                                        <FormHelperText error id="helper-text-lastname-signup">
-                                            {errors.lastname}
-                                        </FormHelperText>
-                                    )}
-                                </Stack>
-                            </Grid>
-
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
                                     <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
