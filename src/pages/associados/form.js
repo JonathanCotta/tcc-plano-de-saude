@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     Typography,
     Paper,
@@ -43,17 +43,17 @@ const AssociadoForm = (props) => {
     const { formAction } = props;
 
     const dispatch = useDispatch();
-    const urlParams = useParams();
     const navigate = useNavigate();
     const [user] = useAuthState(auth);
+    const [userEmail, setUserEmail] = useState('');
 
     const formConfig = formConfigByAction[formAction];
 
     useEffect(() => {
-        if (formAction !== 'add') {
-            const { id } = urlParams;
+        if (user) {
+            setUserEmail(user.email);
         }
-    });
+    }, [user]);
 
     const handleGoBackClick = () => {
         navigate(-1);
@@ -83,22 +83,20 @@ const AssociadoForm = (props) => {
                                 cidade: '',
                                 tipoLogradouro: '',
                                 logradouro: '',
-                                numero: '',
+                                numeroEndereco: '',
                                 complemento: '',
                                 bairro: '',
                                 cep: '',
-                                telefone: '',
                                 celular: '',
                                 email: '',
                                 tipoPlano: '',
                                 plano: '',
-                                status: 'ativo',
-                                submit: null
+                                status: 'ativo'
                             }}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                 const { uid, email } = user;
                                 const userDoc = { ...values, uid, email, tipo: 'associado' };
-
+                                console.log(userDoc);
                                 setDoc(doc(db, 'users', uid), userDoc)
                                     .then(() => {
                                         setStatus({ success: true });
@@ -132,8 +130,9 @@ const AssociadoForm = (props) => {
                                                     id="nome"
                                                     label="Nome"
                                                     name="nome"
+                                                    onChange={handleChange}
                                                     type="text"
-                                                    defaultValue={values.nome}
+                                                    value={values.nome}
                                                     variant="standard"
                                                     required
                                                     disabled={formConfig.fieldsDisable}
@@ -148,7 +147,8 @@ const AssociadoForm = (props) => {
                                                     label="Sobrenome"
                                                     type="text"
                                                     variant="standard"
-                                                    defaultValue={values.sobrenome}
+                                                    value={values.sobrenome}
+                                                    onChange={handleChange}
                                                     required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
@@ -162,7 +162,8 @@ const AssociadoForm = (props) => {
                                                     label="CPF"
                                                     type="number"
                                                     variant="standard"
-                                                    defaultValue={values.cpf}
+                                                    value={values.cpf}
+                                                    onChange={handleChange}
                                                     required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
@@ -187,28 +188,25 @@ const AssociadoForm = (props) => {
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={4}>
-                                            <FormControl
-                                                name="escolaridade"
-                                                variant="standard"
-                                                fullWidth
-                                                required
-                                            >
+                                            <FormControl variant="standard" fullWidth required>
                                                 <InputLabel id="escolaridade-select-label">
                                                     Formação
                                                 </InputLabel>
                                                 <Select
                                                     labelId="escolaridade-select-label"
                                                     id="escolaridade"
-                                                    defaultValue={values.escolaridade}
+                                                    name="escolaridade"
+                                                    value={values.escolaridade}
+                                                    onChange={handleChange}
                                                 >
-                                                    <MenuItem value={'enfermaria'}>
-                                                        Enfermaria
+                                                    <MenuItem value={'segundograu'}>
+                                                        2º Grau
                                                     </MenuItem>
-                                                    <MenuItem value={'quartoCompartilhado'}>
-                                                        Quarto compartilhado
+                                                    <MenuItem value={'terceirograu'}>
+                                                        Ensino superior
                                                     </MenuItem>
-                                                    <MenuItem value={'quartoIndividual'}>
-                                                        Quarto individual
+                                                    <MenuItem value={'fundamental'}>
+                                                        Primário
                                                     </MenuItem>
                                                 </Select>
                                             </FormControl>
@@ -224,7 +222,8 @@ const AssociadoForm = (props) => {
                                                 </InputLabel>
                                                 <Select
                                                     name="estado"
-                                                    defaultValue={values.estado}
+                                                    value={values.estado}
+                                                    onChange={handleChange}
                                                     labelId="estado-select-label"
                                                     id="estado"
                                                 >
@@ -268,7 +267,8 @@ const AssociadoForm = (props) => {
                                                     labelId="tipo-logradouro-select-label"
                                                     id="tipoLogradouro"
                                                     name="tipoLogradouro"
-                                                    defaultValue={values.tipoLogradouro}
+                                                    value={values.tipoLogradouro}
+                                                    onChange={handleChange}
                                                 >
                                                     <MenuItem value={'avenida'}>Avenida</MenuItem>
                                                     <MenuItem value={'rua'}>Rua</MenuItem>
@@ -284,7 +284,7 @@ const AssociadoForm = (props) => {
                                                     name="logradouro"
                                                     onChange={handleChange}
                                                     type="text"
-                                                    defaultValue={values.logradouro}
+                                                    value={values.logradouro}
                                                     variant="standard"
                                                     required
                                                     disabled={formConfig.fieldsDisable}
@@ -298,7 +298,8 @@ const AssociadoForm = (props) => {
                                                     label="Complemento"
                                                     name="complemento"
                                                     type="text"
-                                                    defaultValue={values.complemento}
+                                                    value={values.complemento}
+                                                    onChange={handleChange}
                                                     variant="standard"
                                                     required
                                                     disabled={formConfig.fieldsDisable}
@@ -312,7 +313,8 @@ const AssociadoForm = (props) => {
                                                     label="Numero"
                                                     name="numeroEndereco"
                                                     type="number"
-                                                    defaultValue={values.numeroEndereco}
+                                                    value={values.numeroEndereco}
+                                                    onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
                                                     required
@@ -327,28 +329,15 @@ const AssociadoForm = (props) => {
                                         <Grid item xs={12} md={2}>
                                             <FormControl>
                                                 <TextField
-                                                    id="telefone1"
-                                                    label="Telefone 01"
-                                                    name="telefone1"
+                                                    id="celular"
+                                                    label="Celular"
+                                                    name="celular"
                                                     type="number"
-                                                    defaultValue={values.telefone1}
+                                                    value={values.telefone1}
+                                                    onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
                                                     required
-                                                    disabled={formConfig.fieldsDisable}
-                                                />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} md={2}>
-                                            <FormControl>
-                                                <TextField
-                                                    id="telefone2"
-                                                    label="Telefone 02"
-                                                    name="telefone2"
-                                                    defaultValue={values.telefone2}
-                                                    type="number"
-                                                    variant="standard"
-                                                    size="normal"
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -359,7 +348,8 @@ const AssociadoForm = (props) => {
                                                     id="email"
                                                     label="E-mail"
                                                     name="email"
-                                                    defaultValue={values.email}
+                                                    value={userEmail}
+                                                    onChange={(e) => setUserEmail(e.target.value)}
                                                     type="text"
                                                     variant="standard"
                                                     required
@@ -380,7 +370,8 @@ const AssociadoForm = (props) => {
                                                     labelId="tipo-plano-select-label"
                                                     id="tipoPlano"
                                                     name="tipoPlano"
-                                                    defaultValue={values.tipoPlano}
+                                                    value={values.tipoPlano}
+                                                    onChange={handleChange}
                                                 >
                                                     <MenuItem value={'individual'}>
                                                         Individual
@@ -398,7 +389,8 @@ const AssociadoForm = (props) => {
                                                     labelId="plano-select-label"
                                                     id="plano"
                                                     name="plano"
-                                                    defaultValue={values.plano}
+                                                    value={values.plano}
+                                                    onChange={handleChange}
                                                 >
                                                     <MenuItem value={'blue'}>Blue</MenuItem>
                                                     <MenuItem value={'green'}>Green</MenuItem>
@@ -414,7 +406,8 @@ const AssociadoForm = (props) => {
                                                     labelId="estado-select-label"
                                                     id="estado"
                                                     name="estado"
-                                                    defaultValue={values.estado}
+                                                    value={values.estado}
+                                                    onChange={handleChange}
                                                 >
                                                     <MenuItem value={'ativo'}>Ativo</MenuItem>
                                                     <MenuItem value={'analise'}>Análise</MenuItem>
