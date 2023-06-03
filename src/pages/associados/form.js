@@ -91,12 +91,18 @@ const AssociadoForm = (props) => {
                                 email: '',
                                 tipoPlano: '',
                                 plano: '',
-                                status: 'ativo'
+                                statusPlano: 'ativo'
                             }}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                 const { uid, email } = user;
-                                const userDoc = { ...values, uid, email, tipo: 'associado' };
-                                console.log(userDoc);
+                                const userDoc = {
+                                    ...values,
+                                    uid,
+                                    email,
+                                    tipo: 'associado',
+                                    isRegistryComplete: true
+                                };
+
                                 setDoc(doc(db, 'users', uid), userDoc)
                                     .then(() => {
                                         setStatus({ success: true });
@@ -233,6 +239,22 @@ const AssociadoForm = (props) => {
                                                 </Select>
                                             </FormControl>
                                         </Grid>
+                                        <Grid item xs={12} md={2}>
+                                            <FormControl>
+                                                <TextField
+                                                    id="cep"
+                                                    label="cep"
+                                                    name="cep"
+                                                    type="number"
+                                                    value={values.cep}
+                                                    onChange={handleChange}
+                                                    variant="standard"
+                                                    size="normal"
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
                                         <Grid item xs={12} md={3}>
                                             <FormControl variant="standard" fullWidth required>
                                                 <InputLabel id="cidade-select-label">
@@ -246,16 +268,27 @@ const AssociadoForm = (props) => {
                                                     value={values.cidade}
                                                     required
                                                 >
-                                                    <MenuItem value={'enfermaria'}>
-                                                        Enfermaria
+                                                    <MenuItem value={'niteroi'}>Niteroi</MenuItem>
+                                                    <MenuItem value={'riodejaneiro'}>
+                                                        Rio de Janeiro
                                                     </MenuItem>
-                                                    <MenuItem value={'quartoCompartilhado'}>
-                                                        Quarto compartilhado
-                                                    </MenuItem>
-                                                    <MenuItem value={'quartoIndividual'}>
-                                                        Quarto individual
-                                                    </MenuItem>
+                                                    <MenuItem value={'itaguai'}>Itaguai</MenuItem>
                                                 </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} md={3}>
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    id="bairro"
+                                                    label="Bairro"
+                                                    name="bairro"
+                                                    onChange={handleChange}
+                                                    type="text"
+                                                    value={values.bairro}
+                                                    variant="standard"
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
@@ -399,14 +432,14 @@ const AssociadoForm = (props) => {
                                         </Grid>
                                         <Grid item xs={12} md={3}>
                                             <FormControl variant="standard" fullWidth required>
-                                                <InputLabel id="estado-select-label">
+                                                <InputLabel id="status-plano-select-label">
                                                     Status do Plano
                                                 </InputLabel>
                                                 <Select
-                                                    labelId="estado-select-label"
-                                                    id="estado"
-                                                    name="estado"
-                                                    value={values.estado}
+                                                    labelId="status-plano-select-label"
+                                                    id="statusPlano"
+                                                    name="statusPlano"
+                                                    value={values.statusPlano}
                                                     onChange={handleChange}
                                                 >
                                                     <MenuItem value={'ativo'}>Ativo</MenuItem>
