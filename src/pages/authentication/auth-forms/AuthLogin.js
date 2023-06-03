@@ -75,7 +75,7 @@ const AuthLogin = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                                    <InputLabel htmlFor="email-login">Email</InputLabel>
                                     <OutlinedInput
                                         id="email-login"
                                         type="email"
@@ -83,7 +83,7 @@ const AuthLogin = () => {
                                         name="email"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="Enter email address"
+                                        placeholder="Digite o endereço de email"
                                         fullWidth
                                         error={Boolean(touched.email && errors.email)}
                                     />
@@ -99,7 +99,7 @@ const AuthLogin = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-login">Password</InputLabel>
+                                    <InputLabel htmlFor="password-login">Senha</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
@@ -126,7 +126,7 @@ const AuthLogin = () => {
                                                 </IconButton>
                                             </InputAdornment>
                                         }
-                                        placeholder="Enter password"
+                                        placeholder="Digite sua senha"
                                     />
                                     {touched.password && errors.password && (
                                         <FormHelperText
@@ -152,7 +152,7 @@ const AuthLogin = () => {
                                         to=""
                                         color="text.primary"
                                     >
-                                        Forgot Password?
+                                        Esqueceu a senha?
                                     </Link>
                                 </Stack>
                             </Grid>

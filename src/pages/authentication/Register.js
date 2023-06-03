@@ -20,7 +20,7 @@ const Register = () => (
                     alignItems="baseline"
                     sx={{ mb: { xs: -0.5, sm: 0.5 } }}
                 >
-                    <Typography variant="h3">Sign up</Typography>
+                    <Typography variant="h3">Cadastro</Typography>
                     <Typography
                         component={Link}
                         to="/login"
@@ -28,7 +28,7 @@ const Register = () => (
                         sx={{ textDecoration: 'none' }}
                         color="primary"
                     >
-                        Already have an account?
+                        Já possui uma conta?
                     </Typography>
                 </Stack>
             </Grid>

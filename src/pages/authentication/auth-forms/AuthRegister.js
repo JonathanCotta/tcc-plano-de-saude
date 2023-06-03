@@ -183,13 +183,13 @@ const AuthRegister = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Typography variant="body2">
-                                    By Signing up, you agree to our &nbsp;
+                                    Ao se cadastrar você concorda com nossos &nbsp;
                                     <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Terms of Service
+                                        Termos de serviço
                                     </Link>
-                                    &nbsp; and &nbsp;
+                                    &nbsp; e &nbsp;
                                     <Link variant="subtitle2" component={RouterLink} to="#">
-                                        Privacy Policy
+                                        Política de privicidade
                                     </Link>
                                 </Typography>
                             </Grid>
@@ -209,7 +209,7 @@ const AuthRegister = () => {
                                         variant="contained"
                                         color="primary"
                                     >
-                                        Create Account
+                                        Criar conta
                                     </Button>
                                 </AnimateButton>
                             </Grid>

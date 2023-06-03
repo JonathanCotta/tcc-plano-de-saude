@@ -28,7 +28,7 @@ const Login = () => (
                         sx={{ textDecoration: 'none' }}
                         color="primary"
                     >
-                        Don&apos;t have an account?
+                        Não possui uma conta?
                     </Typography>
                 </Stack>
             </Grid>
