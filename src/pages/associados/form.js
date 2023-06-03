@@ -107,6 +107,7 @@ const AssociadoForm = (props) => {
                                     .then(() => {
                                         setStatus({ success: true });
                                         setSubmitting(true);
+                                        navigate('/');
                                     })
                                     .catch((err) => {
                                         console.error(err);
