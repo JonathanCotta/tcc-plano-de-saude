@@ -20,7 +20,7 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 import AnimateButton from 'components/@extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
-import auth from '../../../services/fireBaseAuth';
+import { auth } from 'firebaseApp';
 
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 

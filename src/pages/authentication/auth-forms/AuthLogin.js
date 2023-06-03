@@ -1,11 +1,8 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-
-// material-ui
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import {
     Button,
-    Checkbox,
-    FormControlLabel,
     FormHelperText,
     Grid,
     Link,
@@ -13,26 +10,20 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
-    Stack,
-    Typography
+    Stack
 } from '@mui/material';
-
-// third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-// project import
-
 import AnimateButton from 'components/@extended/AnimateButton';
-
-// assets
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { auth } from 'firebaseApp';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
-    const [checked, setChecked] = React.useState(false);
-
+    const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = React.useState(false);
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -57,14 +48,18 @@ const AuthLogin = () => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        setStatus({ success: false });
-                        setSubmitting(false);
-                    } catch (err) {
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
-                    }
+                    const { email, password } = values;
+                    signInWithEmailAndPassword(email, password)
+                        .then(() => {
+                            setStatus({ success: true });
+                            setSubmitting(true);
+                            navigate('/');
+                        })
+                        .catch((err) => {
+                            setStatus({ success: false });
+                            setErrors({ submit: err.message });
+                            setSubmitting(false);
+                        });
                 }}
             >
                 {({
@@ -151,22 +146,6 @@ const AuthLogin = () => {
                                     alignItems="center"
                                     spacing={2}
                                 >
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={checked}
-                                                onChange={(event) =>
-                                                    setChecked(event.target.checked)
-                                                }
-                                                name="checked"
-                                                color="primary"
-                                                size="small"
-                                            />
-                                        }
-                                        label={
-                                            <Typography variant="h6">Keep me sign in</Typography>
-                                        }
-                                    />
                                     <Link
                                         variant="h6"
                                         component={RouterLink}

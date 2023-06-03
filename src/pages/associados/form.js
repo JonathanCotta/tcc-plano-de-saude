@@ -24,8 +24,7 @@ import * as Yup from 'yup';
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
 import CONSTANTS from 'utils/CONSTANTS';
-import { auth } from 'services/fireBaseAuth';
-import { db } from 'database/index';
+import { auth, db } from 'firebaseApp';
 
 const formConfigByAction = {
     edit: {
