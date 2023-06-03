@@ -100,7 +100,7 @@ const AuthRegister = () => {
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                                    <InputLabel htmlFor="email-signup">Email*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.email && errors.email)}
@@ -122,7 +122,7 @@ const AuthRegister = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="password-signup">Password</InputLabel>
+                                    <InputLabel htmlFor="password-signup">Senha*</InputLabel>
                                     <OutlinedInput
                                         fullWidth
                                         error={Boolean(touched.password && errors.password)}
