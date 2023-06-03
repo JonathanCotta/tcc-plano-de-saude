@@ -77,7 +77,7 @@ const ProfissionalList = (_props) => {
     const navigate = useNavigate();
 
     const handleRowClick = (tableEvent) => {
-        return navigate(`/especialidade/editar/${tableEvent.id}`);
+        return navigate(`/profissional/editar/${tableEvent.id}`);
     };
 
     return (
