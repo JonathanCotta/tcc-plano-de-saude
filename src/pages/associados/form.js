@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     Typography,
     Paper,
@@ -43,6 +43,7 @@ const AssociadoForm = (props) => {
     const { formAction } = props;
 
     const dispatch = useDispatch();
+    const urlParams = useParams();
     const navigate = useNavigate();
     const [user] = useAuthState(auth);
     const [userEmail, setUserEmail] = useState('');
@@ -94,16 +95,16 @@ const AssociadoForm = (props) => {
                                 statusPlano: 'ativo'
                             }}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                                const { uid, email } = user;
+                                const { email } = user;
                                 const userDoc = {
                                     ...values,
-                                    uid,
+                                    uid: urlParams,
                                     email,
                                     tipo: 'associado',
                                     isRegistryComplete: true
                                 };
 
-                                setDoc(doc(db, 'users', uid), userDoc)
+                                setDoc(doc(db, 'users', urlParams), userDoc)
                                     .then(() => {
                                         setStatus({ success: true });
                                         setSubmitting(true);
