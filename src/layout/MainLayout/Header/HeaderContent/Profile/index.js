@@ -151,10 +151,6 @@ const Profile = () => {
                                                         spacing={1.25}
                                                         alignItems="center"
                                                     >
-                                                        <Avatar
-                                                            alt="profile user"
-                                                            sx={{ width: 32, height: 32 }}
-                                                        />
                                                         <Stack>
                                                             <Typography variant="h6">
                                                                 John Doe

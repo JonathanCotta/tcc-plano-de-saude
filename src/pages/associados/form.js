@@ -39,6 +39,8 @@ const formConfigByAction = {
     }
 };
 
+const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+
 const AssociadoForm = (props) => {
     const { formAction } = props;
 
@@ -94,6 +96,34 @@ const AssociadoForm = (props) => {
                                 plano: '',
                                 statusPlano: 'ativo'
                             }}
+                            validationSchema={Yup.object().shape({
+                                nome: Yup.string().required('Nome é obrigatário'),
+                                sobrenome: Yup.string().required('Sobrenome é obrigatário'),
+                                cpf: Yup.string()
+                                    .required('CPF é obrigatário')
+                                    .matches(cpfRegex, 'CPF inválido'),
+                                dataNascimento: Yup.date().required(
+                                    'Data de nascimento é obrigatária'
+                                ),
+                                escolaridade: Yup.string().required('Escolaridade é obrigatária'),
+                                estado: Yup.string().required('Estado é obrigatário'),
+                                cidade: Yup.string().required('Cidade é obrigatária'),
+                                tipoLogradouro: Yup.string().required(
+                                    'Tipo de logradouro é obrigatário'
+                                ),
+                                logradouro: Yup.string().required('Logradouro é obrigatário'),
+                                numeroEndereco: Yup.number().required(
+                                    'NÚmero de endereço é obrigatário'
+                                ),
+                                complemento: Yup.string().required('Complemento é obrigatário'),
+                                bairro: Yup.string().required('Bairro é obrigatário'),
+                                cep: Yup.number().required('CEP é obrigatário'),
+                                celular: Yup.number().required('Celular é obrigatário'),
+                                email: Yup.string().required('E-mail é obrigatário'),
+                                tipoPlano: Yup.string().required('Tipo de plano é obrigatário'),
+                                plano: Yup.string().required('Plano é obrigatário'),
+                                statusPlano: Yup.string().required('Status do plano é obrigatário')
+                            })}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
                                 const { email } = user;
                                 const userDoc = {
@@ -118,14 +148,7 @@ const AssociadoForm = (props) => {
                                     });
                             }}
                         >
-                            {({
-                                errors,
-                                handleBlur,
-                                handleChange,
-                                handleSubmit,
-                                setFieldValue,
-                                values
-                            }) => (
+                            {({ errors, handleChange, handleSubmit, setFieldValue, values }) => (
                                 <form noValidate onSubmit={handleSubmit}>
                                     <Grid container rowSpacing={4} columnSpacing={6}>
                                         <Grid item xs={12} style={{ marginTop: 20 }}>
@@ -138,6 +161,8 @@ const AssociadoForm = (props) => {
                                                     id="nome"
                                                     label="Nome"
                                                     name="nome"
+                                                    error={!!errors.nome}
+                                                    helperText={errors.nome || ''}
                                                     onChange={handleChange}
                                                     type="text"
                                                     value={values.nome}
@@ -153,6 +178,8 @@ const AssociadoForm = (props) => {
                                                     id="sobrenome"
                                                     name="sobrenome"
                                                     label="Sobrenome"
+                                                    error={!!errors.sobrenome}
+                                                    helperText={errors.sobrenome || ''}
                                                     type="text"
                                                     variant="standard"
                                                     value={values.sobrenome}
@@ -168,7 +195,9 @@ const AssociadoForm = (props) => {
                                                     id="cpf"
                                                     name="cpf"
                                                     label="CPF"
-                                                    type="number"
+                                                    error={!!errors.cpf}
+                                                    helperText={errors.cpf || '000.000.000-00'}
+                                                    type="text"
                                                     variant="standard"
                                                     value={values.cpf}
                                                     onChange={handleChange}
@@ -181,6 +210,7 @@ const AssociadoForm = (props) => {
                                             <DatePicker
                                                 id="dataNascimento"
                                                 label="Data de Nascimento"
+                                                error={!!errors.dataNascimento}
                                                 format="DD-MM-YYYY"
                                                 onChange={(value) => {
                                                     setFieldValue(
@@ -190,7 +220,8 @@ const AssociadoForm = (props) => {
                                                 }}
                                                 slotProps={{
                                                     textField: {
-                                                        helperText: 'DD/MM/AAAA'
+                                                        helperText:
+                                                            errors.dataNascimento || 'DD/MM/AAAA'
                                                     }
                                                 }}
                                             />
@@ -204,6 +235,8 @@ const AssociadoForm = (props) => {
                                                     labelId="escolaridade-select-label"
                                                     id="escolaridade"
                                                     name="escolaridade"
+                                                    error={!!errors.escolaridade}
+                                                    helperText={errors.escolaridade || ''}
                                                     value={values.escolaridade}
                                                     onChange={handleChange}
                                                 >
@@ -231,6 +264,8 @@ const AssociadoForm = (props) => {
                                                 <Select
                                                     name="estado"
                                                     value={values.estado}
+                                                    error={!!errors.estado}
+                                                    helperText={errors.estado || ''}
                                                     onChange={handleChange}
                                                     labelId="estado-select-label"
                                                     id="estado"
@@ -248,6 +283,8 @@ const AssociadoForm = (props) => {
                                                     label="cep"
                                                     name="cep"
                                                     type="number"
+                                                    error={!!errors.cep}
+                                                    helperText={errors.cep || ''}
                                                     value={values.cep}
                                                     onChange={handleChange}
                                                     variant="standard"
@@ -266,6 +303,8 @@ const AssociadoForm = (props) => {
                                                     labelId="cidade-select-label"
                                                     id="cidade"
                                                     name="cidade"
+                                                    error={!!errors.cidade}
+                                                    helperText={errors.cidade || ''}
                                                     onChange={handleChange}
                                                     value={values.cidade}
                                                     required
@@ -284,6 +323,8 @@ const AssociadoForm = (props) => {
                                                     id="bairro"
                                                     label="Bairro"
                                                     name="bairro"
+                                                    error={!!errors.bairro}
+                                                    helperText={errors.bairro || ''}
                                                     onChange={handleChange}
                                                     type="text"
                                                     value={values.bairro}
@@ -301,6 +342,8 @@ const AssociadoForm = (props) => {
                                                 <Select
                                                     labelId="tipo-logradouro-select-label"
                                                     id="tipoLogradouro"
+                                                    error={!!errors.tipoLogradouro}
+                                                    helperText={errors.tipoLogradouro || ''}
                                                     name="tipoLogradouro"
                                                     value={values.tipoLogradouro}
                                                     onChange={handleChange}
@@ -317,6 +360,8 @@ const AssociadoForm = (props) => {
                                                     id="logradouro"
                                                     label="Logradouro"
                                                     name="logradouro"
+                                                    error={!!errors.logradouro}
+                                                    helperText={errors.logradouro || ''}
                                                     onChange={handleChange}
                                                     type="text"
                                                     value={values.logradouro}
@@ -333,6 +378,8 @@ const AssociadoForm = (props) => {
                                                     label="Complemento"
                                                     name="complemento"
                                                     type="text"
+                                                    error={!!errors.complemento}
+                                                    helperText={errors.complemento || ''}
                                                     value={values.complemento}
                                                     onChange={handleChange}
                                                     variant="standard"
@@ -348,6 +395,8 @@ const AssociadoForm = (props) => {
                                                     label="Numero"
                                                     name="numeroEndereco"
                                                     type="number"
+                                                    error={!!errors.numeroEndereco}
+                                                    helperText={errors.numeroEndereco || ''}
                                                     value={values.numeroEndereco}
                                                     onChange={handleChange}
                                                     variant="standard"
@@ -367,6 +416,8 @@ const AssociadoForm = (props) => {
                                                     id="celular"
                                                     label="Celular"
                                                     name="celular"
+                                                    error={!!errors.celular}
+                                                    helperText={errors.celular || ''}
                                                     type="number"
                                                     value={values.telefone1}
                                                     onChange={handleChange}
@@ -383,6 +434,8 @@ const AssociadoForm = (props) => {
                                                     id="email"
                                                     label="E-mail"
                                                     name="email"
+                                                    error={!!errors.email}
+                                                    helperText={errors.email || ''}
                                                     value={userEmail}
                                                     onChange={(e) => setUserEmail(e.target.value)}
                                                     type="text"
@@ -405,6 +458,8 @@ const AssociadoForm = (props) => {
                                                     labelId="tipo-plano-select-label"
                                                     id="tipoPlano"
                                                     name="tipoPlano"
+                                                    error={!!errors.tipoPlano}
+                                                    helperText={errors.tipoPlano || ''}
                                                     value={values.tipoPlano}
                                                     onChange={handleChange}
                                                 >
@@ -424,8 +479,10 @@ const AssociadoForm = (props) => {
                                                     labelId="plano-select-label"
                                                     id="plano"
                                                     name="plano"
+                                                    error={!!errors.plano}
                                                     value={values.plano}
                                                     onChange={handleChange}
+                                                    helperText={errors.plano || ''}
                                                 >
                                                     <MenuItem value={'blue'}>Blue</MenuItem>
                                                     <MenuItem value={'green'}>Green</MenuItem>
@@ -441,8 +498,10 @@ const AssociadoForm = (props) => {
                                                     labelId="status-plano-select-label"
                                                     id="statusPlano"
                                                     name="statusPlano"
+                                                    error={!!errors.statusPlano}
                                                     value={values.statusPlano}
                                                     onChange={handleChange}
+                                                    helperText={errors.statusPlano || ''}
                                                 >
                                                     <MenuItem value={'ativo'}>Ativo</MenuItem>
                                                     <MenuItem value={'analise'}>Análise</MenuItem>
