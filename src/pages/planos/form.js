@@ -18,10 +18,15 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
+import { Formik } from 'formik';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import * as Yup from 'yup';
 
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
 import CONSTANTS from 'utils/CONSTANTS';
+import { auth, db } from 'firebaseApp';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -70,12 +75,6 @@ const PlanoForm = (props) => {
 
     const [coberturaAtendimento, setCoberturaAtendimento] = useState([]);
 
-    useEffect(() => {
-        if (formAction !== 'add') {
-            const { id } = urlParams;
-        }
-    });
-
     const handleGoBackClick = () => {
         navigate(-1);
     };
@@ -83,8 +82,6 @@ const PlanoForm = (props) => {
     const handleRemoveClick = () => {
         dispatch(openDialog({ message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE }));
     };
-
-    const handleClassificacaoSelectChange = () => {};
 
     const handleCoberturaAtendimentoChange = (event) => {
         const {
@@ -104,141 +101,229 @@ const PlanoForm = (props) => {
             </Grid>
             <Grid item xs={6} sx={{ mb: -2.25 }}>
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
-                    <Box component="form" autoComplete="off">
-                        <Grid container rowSpacing={4} columnSpacing={6}>
-                            <Grid item xs={5}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        id="name"
-                                        label="Nome"
-                                        type="text"
-                                        variant="standard"
-                                        required
-                                        disabled={formConfig.fieldsDisable}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormControl variant="standard" fullWidth required>
-                                    <InputLabel id="classificacao-select-label">
-                                        Classificação
-                                    </InputLabel>
-                                    <Select
-                                        labelId="classificacao-select-label"
-                                        id="classificacao"
-                                        label="Classificação"
-                                        onChange={handleClassificacaoSelectChange}
-                                    >
-                                        <MenuItem value={'enfermaria'}>Enfermaria</MenuItem>
-                                        <MenuItem value={'quartoCompartilhado'}>
-                                            Quarto compartilhado
-                                        </MenuItem>
-                                        <MenuItem value={'quartoIndividual'}>
-                                            Quarto individual
-                                        </MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={5}>
-                                <FormControl>
-                                    <TextField
-                                        id="qtdConsultas"
-                                        label="Numero de Consultas"
-                                        type="number"
-                                        variant="standard"
-                                        size="normal"
-                                        required
-                                        disabled={formConfig.fieldsDisable}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <FormControl variant="standard" required>
-                                    <TextField
-                                        id="examesAno"
-                                        label="Exames por ano"
-                                        type="number"
-                                        variant="standard"
-                                        required
-                                        disabled={formConfig.fieldsDisable}
-                                    />
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={9.5}>
-                                <FormControl fullWidth required>
-                                    <InputLabel id="cobertura-atendimentos-select-label">
-                                        Atendimetnos cobertos
-                                    </InputLabel>
-                                    <Select
-                                        labelId="cobertura-atendimentos-select-label"
-                                        id="coberturaAtendimento"
-                                        label="Cobertura de Atentimentos"
-                                        multiple
-                                        onChange={handleCoberturaAtendimentoChange}
-                                        value={coberturaAtendimento}
-                                        MenuProps={MenuProps}
-                                        input={
-                                            <OutlinedInput id="select-multiple-chip" label="Chip" />
-                                        }
-                                        renderValue={(selected) => (
-                                            <Box
-                                                sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}
-                                            >
-                                                {selected.map((value) => (
-                                                    <Chip key={value} label={value} />
-                                                ))}
-                                            </Box>
-                                        )}
-                                    >
-                                        {atendimentos.map((name) => (
-                                            <MenuItem
-                                                key={name}
-                                                value={name}
-                                                style={getStyles(name, coberturaAtendimento, theme)}
-                                            >
-                                                {name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid
-                                xs={12}
-                                container
-                                item
-                                style={{ marginTop: 30 }}
-                                alignItems="flex-end"
-                                justifyContent="flex-end"
-                                direction="row"
-                                columnSpacing={1}
-                            >
-                                <Grid item>
-                                    {formConfig.saveEnabled && (
-                                        <Button variant="contained">Salvar</Button>
-                                    )}
-                                </Grid>
-                                {formConfig.removeEnabled && (
-                                    <Grid item>
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            onClick={handleRemoveClick}
+                    <Box autoComplete="off">
+                        <Formik
+                            initialValues={{
+                                nome: '',
+                                classificacao: '',
+                                qtdConsultas: 0,
+                                examesAno: 0,
+                                coberturaAtendimento: []
+                            }}
+                            validationSchema={Yup.object().shape({
+                                nome: Yup.string().required('Nome é obrigatário'),
+                                classificacao: Yup.string().required('Classificação é obrigatária'),
+                                qtdConsultas: Yup.number().required(
+                                    'Numero de consultas é obrigatário'
+                                ),
+                                examesAno: Yup.number().required('Numero de exames é obrigatário'),
+                                coberturaAtendimento: Yup.array()
+                                    .of(Yup.string())
+                                    .min(1)
+                                    .required('Cobertura de atendimento é obrigatário')
+                            })}
+                            onSubmit={async (values, { setSubmitting }) => {
+                                let planoId;
+
+                                const { nome } = values;
+
+                                if (formAction === 'add') {
+                                    planoId = nome
+                                        .toLowerCase()
+                                        .normalize('NFD')
+                                        .replace(/[\u0300-\u036f]/g, '')
+                                        .replace(' ', '_');
+                                } else {
+                                    planoId = urlParams.id;
+                                }
+
+                                const planoDoc = { ...values, id: planoId };
+
+                                setDoc(doc(db, 'planos', planoId), planoDoc)
+                                    .then(() => {
+                                        setStatus({ success: true });
+                                        setSubmitting(true);
+                                        navigate('/');
+                                    })
+                                    .catch((err) => {
+                                        console.error(err);
+                                        setStatus({ success: false });
+                                        setErrors({ submit: err.message });
+                                        setSubmitting(false);
+                                    });
+                            }}
+                        >
+                            {({ errors, handleChange, handleSubmit, values }) => (
+                                <form noValidate onSubmit={handleSubmit}>
+                                    <Grid container rowSpacing={4} columnSpacing={6}>
+                                        <Grid item xs={5}>
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    id="nome"
+                                                    label="Nome"
+                                                    error={!!errors.nome}
+                                                    helperText={errors.nome || ''}
+                                                    onChange={handleChange}
+                                                    type="text"
+                                                    variant="standard"
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <FormControl variant="standard" fullWidth required>
+                                                <InputLabel id="classificacao-select-label">
+                                                    Classificação
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="classificacao-select-label"
+                                                    id="classificacao"
+                                                    label="Classificação"
+                                                    error={!!errors.classificacao}
+                                                    helperText={errors.classificacao || ''}
+                                                    onChange={handleChange}
+                                                    value={values.classificacao}
+                                                >
+                                                    <MenuItem value={'enfermaria'}>
+                                                        Enfermaria
+                                                    </MenuItem>
+                                                    <MenuItem value={'quartoCompartilhado'}>
+                                                        Quarto compartilhado
+                                                    </MenuItem>
+                                                    <MenuItem value={'quartoIndividual'}>
+                                                        Quarto individual
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={5}>
+                                            <FormControl>
+                                                <TextField
+                                                    id="qtdConsultas"
+                                                    label="Numero de Consultas"
+                                                    error={!!errors.qtdConsultas}
+                                                    helperText={errors.qtdConsultas || ''}
+                                                    type="number"
+                                                    onChange={handleChange}
+                                                    value={values.qtdConsultas}
+                                                    variant="standard"
+                                                    size="normal"
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <FormControl variant="standard" required>
+                                                <TextField
+                                                    id="examesAno"
+                                                    label="Exames por ano"
+                                                    type="number"
+                                                    value={values.examesAno}
+                                                    error={!!errors.examesAno}
+                                                    helperText={errors.examesAno || ''}
+                                                    onChange={handleChange}
+                                                    variant="standard"
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={9.5}>
+                                            <FormControl fullWidth required>
+                                                <InputLabel id="cobertura-atendimentos-select-label">
+                                                    Atendimetnos cobertos
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="cobertura-atendimentos-select-label"
+                                                    id="coberturaAtendimento"
+                                                    label="Cobertura de Atentimentos"
+                                                    error={!!errors.coberturaAtendimento}
+                                                    helperText={errors.coberturaAtendimento || ''}
+                                                    multiple
+                                                    onChange={handleCoberturaAtendimentoChange}
+                                                    value={coberturaAtendimento}
+                                                    MenuProps={MenuProps}
+                                                    input={
+                                                        <OutlinedInput
+                                                            id="select-multiple-chip"
+                                                            label="Chip"
+                                                        />
+                                                    }
+                                                    renderValue={(selected) => (
+                                                        <Box
+                                                            sx={{
+                                                                display: 'flex',
+                                                                flexWrap: 'wrap',
+                                                                gap: 0.5
+                                                            }}
+                                                        >
+                                                            {selected.map((value) => (
+                                                                <Chip key={value} label={value} />
+                                                            ))}
+                                                        </Box>
+                                                    )}
+                                                >
+                                                    {atendimentos.map((name) => (
+                                                        <MenuItem
+                                                            key={name}
+                                                            value={name}
+                                                            style={getStyles(
+                                                                name,
+                                                                coberturaAtendimento,
+                                                                theme
+                                                            )}
+                                                        >
+                                                            {name}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid
+                                            xs={12}
+                                            container
+                                            item
+                                            style={{ marginTop: 30 }}
+                                            alignItems="flex-end"
+                                            justifyContent="flex-end"
+                                            direction="row"
+                                            columnSpacing={1}
                                         >
-                                            Remover
-                                        </Button>
+                                            <Grid item>
+                                                {formConfig.saveEnabled && (
+                                                    <Button variant="contained" type="submit">
+                                                        Salvar
+                                                    </Button>
+                                                )}
+                                            </Grid>
+                                            {formConfig.removeEnabled && (
+                                                <Grid item>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="error"
+                                                        type="submit"
+                                                        onClick={handleRemoveClick}
+                                                    >
+                                                        Remover
+                                                    </Button>
+                                                </Grid>
+                                            )}
+                                            <Grid item>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="secondary"
+                                                    onClick={handleGoBackClick}
+                                                >
+                                                    Cancelar
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
-                                )}
-                                <Grid item>
-                                    <Button
-                                        variant="outlined"
-                                        color="secondary"
-                                        onClick={handleGoBackClick}
-                                    >
-                                        Cancelar
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
+                                </form>
+                            )}
+                        </Formik>
                     </Box>
                 </Paper>
             </Grid>
