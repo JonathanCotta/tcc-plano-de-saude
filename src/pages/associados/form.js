@@ -53,10 +53,10 @@ const AssociadoForm = (props) => {
     const formConfig = formConfigByAction[formAction];
 
     useEffect(() => {
-        if (user) {
+        if (user && user.uid !== urlParams.id) {
             setUserEmail(user.email);
         }
-    }, [user]);
+    }, [user, urlParams]);
 
     const handleGoBackClick = () => {
         navigate(-1);
