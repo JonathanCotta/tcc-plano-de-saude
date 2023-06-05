@@ -129,6 +129,7 @@ const PlanoForm = (props) => {
 
                                 if (formAction === 'add') {
                                     planoId = nome
+                                        .trim()
                                         .toLowerCase()
                                         .normalize('NFD')
                                         .replace(/[\u0300-\u036f]/g, '')

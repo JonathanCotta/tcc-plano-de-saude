@@ -143,11 +143,10 @@ const ProfissionalForm = (props) => {
                                 const profissionalDoc = {
                                     ...values,
                                     uid: profissionalId,
-                                    tipo: 'profissional',
                                     isRegistryComplete: true
                                 };
 
-                                setDoc(doc(db, 'users', profissionalId), profissionalDoc)
+                                setDoc(doc(db, 'profissional', profissionalId), profissionalDoc)
                                     .then(() => {
                                         setStatus({ success: true });
                                         setSubmitting(true);
@@ -327,7 +326,7 @@ const ProfissionalForm = (props) => {
                                                     error={!!errors.celular}
                                                     helperText={errors.celular || ''}
                                                     type="number"
-                                                    value={values.telefone1}
+                                                    value={values.celular}
                                                     onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
@@ -373,6 +372,7 @@ const ProfissionalForm = (props) => {
                                                     <Button
                                                         variant="contained"
                                                         color="error"
+                                                        type="submit"
                                                         onClick={handleRemoveClick}
                                                     >
                                                         Remover
@@ -383,7 +383,6 @@ const ProfissionalForm = (props) => {
                                                 <Button
                                                     variant="outlined"
                                                     color="secondary"
-                                                    type="submit"
                                                     onClick={handleGoBackClick}
                                                 >
                                                     Cancelar

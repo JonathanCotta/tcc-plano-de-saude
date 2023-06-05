@@ -64,7 +64,7 @@ const PlanoList = (_props) => {
         <PlanoListStyle>
             <Grid container rowSpacing={4} columnSpacing={2}>
                 <Grid item xs={12}>
-                    <Typography variant="h3">Especialidades</Typography>
+                    <Typography variant="h3">Planos</Typography>
                     <Divider />
                 </Grid>
                 <Grid item xs={6} sx={{ mb: -2.25 }}>

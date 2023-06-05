@@ -95,7 +95,7 @@ const ProfissionalList = (_props) => {
                                     variant="outlined"
                                     size="small"
                                     component={Link}
-                                    to="/especialidade/criar"
+                                    to="/profissional/criar"
                                 >
                                     Criar
                                 </Button>

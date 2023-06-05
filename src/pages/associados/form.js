@@ -419,7 +419,7 @@ const AssociadoForm = (props) => {
                                                     error={!!errors.celular}
                                                     helperText={errors.celular || ''}
                                                     type="number"
-                                                    value={values.telefone1}
+                                                    value={values.celular}
                                                     onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"

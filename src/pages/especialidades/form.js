@@ -75,6 +75,7 @@ const EspecialidadeForm = (props) => {
 
                                 if (formAction === 'add') {
                                     especialidadeID = nome
+                                        .trim()
                                         .toLowerCase()
                                         .normalize('NFD')
                                         .replace(/[\u0300-\u036f]/g, '')
