@@ -61,6 +61,8 @@ function getStyles(name, personName, theme) {
     };
 }
 
+const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+
 const ProfissionalForm = (props) => {
     const theme = useTheme();
     const { formAction } = props;
@@ -111,6 +113,7 @@ const ProfissionalForm = (props) => {
                             initialValues={{
                                 nome: '',
                                 sobrenome: '',
+                                cpf: '',
                                 tipoIdentificacao: '',
                                 identificacao: '',
                                 tipoProfissional: '',
@@ -121,6 +124,9 @@ const ProfissionalForm = (props) => {
                             validationSchema={Yup.object().shape({
                                 nome: Yup.string().required('Nome é obrigatário'),
                                 sobrenome: Yup.string().required('Sobrenome é obrigatário'),
+                                cpf: Yup.string()
+                                    .required('CPF é obrigatário')
+                                    .matches(cpfRegex, 'CPF inválido'),
                                 tipoIdentificacao: Yup.string().required(
                                     'Tipo de identificação é obrigatário'
                                 ),
@@ -199,7 +205,23 @@ const ProfissionalForm = (props) => {
                                                 />
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} md={4}></Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    id="cpf"
+                                                    name="cpf"
+                                                    label="CPF"
+                                                    error={!!errors.cpf}
+                                                    helperText={errors.cpf || '000.000.000-00'}
+                                                    type="text"
+                                                    variant="standard"
+                                                    value={values.cpf}
+                                                    onChange={handleChange}
+                                                    required
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
                                         <Grid item xs={12} md={4}>
                                             <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="tipo-select-label">

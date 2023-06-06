@@ -122,6 +122,7 @@ const ConveniadoForm = (props) => {
                         <Formik
                             initialValues={{
                                 nome: '',
+                                cnpj: '',
                                 tipo: '',
                                 estado: '',
                                 cidade: '',
@@ -137,6 +138,7 @@ const ConveniadoForm = (props) => {
                             }}
                             validationSchema={Yup.object().shape({
                                 nome: Yup.string().required('Nome é obrigatário'),
+                                cnpj: Yup.string().required('CNPJ é obrigatário'),
                                 tipo: Yup.string().required('Tipo é obrigatário'),
                                 estado: Yup.string().required('Estado é obrigatário'),
                                 cidade: Yup.string().required('Cidade é obrigatária'),
@@ -215,6 +217,23 @@ const ConveniadoForm = (props) => {
                                                     type="text"
                                                     value={values.nome}
                                                     variant="standard"
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    id="cnpj"
+                                                    name="cnpj"
+                                                    label="CNPJ"
+                                                    error={!!errors.cnpj}
+                                                    helperText={errors.cnpj || '000.000.000-00'}
+                                                    type="text"
+                                                    variant="standard"
+                                                    value={values.cnpj}
+                                                    onChange={handleChange}
+                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
