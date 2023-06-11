@@ -20,6 +20,7 @@ import { useDispatch } from 'react-redux';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import * as Yup from 'yup';
+import { SearchOutlined } from '@ant-design/icons';
 
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
@@ -67,7 +68,7 @@ const AssociadoForm = (props) => {
     };
 
     return (
-        <Grid container rowSpacing={4} columnSpacing={2}>
+        <Grid container rowSpacing={3}>
             <Grid item xs={12}>
                 <Typography variant="h3">Associado</Typography>
                 <Divider />
@@ -93,6 +94,7 @@ const AssociadoForm = (props) => {
                                 celular: '',
                                 email: '',
                                 tipoPlano: '',
+                                codigoCliente: '',
                                 plano: '',
                                 statusPlano: 'ativo'
                             }}
@@ -122,6 +124,9 @@ const AssociadoForm = (props) => {
                                 email: Yup.string().required('E-mail é obrigatário'),
                                 tipoPlano: Yup.string().required('Tipo de plano é obrigatário'),
                                 plano: Yup.string().required('Plano é obrigatário'),
+                                codigoCliente: Yup.string().required(
+                                    'Numero da carteira é obrigatário'
+                                ),
                                 statusPlano: Yup.string().required('Status do plano é obrigatário')
                             })}
                             onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -167,7 +172,6 @@ const AssociadoForm = (props) => {
                                                     type="text"
                                                     value={values.nome}
                                                     variant="standard"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -184,7 +188,6 @@ const AssociadoForm = (props) => {
                                                     variant="standard"
                                                     value={values.sobrenome}
                                                     onChange={handleChange}
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -201,7 +204,6 @@ const AssociadoForm = (props) => {
                                                     variant="standard"
                                                     value={values.cpf}
                                                     onChange={handleChange}
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -289,7 +291,6 @@ const AssociadoForm = (props) => {
                                                     onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -307,7 +308,6 @@ const AssociadoForm = (props) => {
                                                     helperText={errors.cidade || ''}
                                                     onChange={handleChange}
                                                     value={values.cidade}
-                                                    required
                                                 >
                                                     <MenuItem value={'niteroi'}>Niteroi</MenuItem>
                                                     <MenuItem value={'riodejaneiro'}>
@@ -329,7 +329,6 @@ const AssociadoForm = (props) => {
                                                     type="text"
                                                     value={values.bairro}
                                                     variant="standard"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -366,7 +365,6 @@ const AssociadoForm = (props) => {
                                                     type="text"
                                                     value={values.logradouro}
                                                     variant="standard"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -383,7 +381,6 @@ const AssociadoForm = (props) => {
                                                     value={values.complemento}
                                                     onChange={handleChange}
                                                     variant="standard"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -401,7 +398,6 @@ const AssociadoForm = (props) => {
                                                     onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -423,7 +419,6 @@ const AssociadoForm = (props) => {
                                                     onChange={handleChange}
                                                     variant="standard"
                                                     size="normal"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -440,7 +435,6 @@ const AssociadoForm = (props) => {
                                                     onChange={(e) => setUserEmail(e.target.value)}
                                                     type="text"
                                                     variant="standard"
-                                                    required
                                                     disabled={formConfig.fieldsDisable}
                                                 />
                                             </FormControl>
@@ -487,6 +481,23 @@ const AssociadoForm = (props) => {
                                                     <MenuItem value={'blue'}>Blue</MenuItem>
                                                     <MenuItem value={'green'}>Green</MenuItem>
                                                 </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} md={2}>
+                                            <FormControl>
+                                                <TextField
+                                                    id="codigoCliente"
+                                                    label="Número da carteira"
+                                                    name="codigoCliente"
+                                                    error={!!errors.codigoCliente}
+                                                    helperText={errors.codigoCliente || ''}
+                                                    type="number"
+                                                    value={values.codigoCliente}
+                                                    onChange={handleChange}
+                                                    variant="standard"
+                                                    size="normal"
+                                                    disabled={formConfig.fieldsDisable}
+                                                />
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>

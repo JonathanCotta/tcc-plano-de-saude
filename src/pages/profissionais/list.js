@@ -82,7 +82,7 @@ const ProfissionalList = (_props) => {
 
     return (
         <ProfissionalListStyle>
-            <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+            <Grid container rowSpacing={3}>
                 <Grid item xs={12}>
                     <Typography variant="h3">Profissionais</Typography>
                     <Divider />

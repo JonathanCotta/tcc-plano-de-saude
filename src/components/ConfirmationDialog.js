@@ -22,30 +22,28 @@ export default function AlertDialog() {
     };
 
     return (
-        <>
-            <Dialog
-                open={dialogState.open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    <Typography>Confirmação</Typography>
-                </DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        {dialogState.message}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="outlined" onClick={handleClose}>
-                        Sim
-                    </Button>
-                    <Button variant="outlined" color="error" onClick={handleClose}>
-                        Não
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+        <Dialog
+            open={dialogState.open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                <Typography>Confirmação</Typography>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {dialogState.message}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button variant="outlined" onClick={handleClose}>
+                    Sim
+                </Button>
+                <Button variant="outlined" color="error" onClick={handleClose}>
+                    Não
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 }

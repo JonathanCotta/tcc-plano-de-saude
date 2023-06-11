@@ -54,14 +54,14 @@ const EspecialidadeForm = (props) => {
     };
 
     return (
-        <Grid container rowSpacing={4} columnSpacing={2}>
+        <Grid container rowSpacing={3}>
             <Grid item xs={12}>
                 <Typography variant="h3">Especialidade</Typography>
                 <Divider />
             </Grid>
             <Grid item xs={6} sx={{ mb: -2.25 }}>
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
-                    <Box autoComplete="off">
+                    <Box>
                         <Formik
                             initialValues={{
                                 nome: ''

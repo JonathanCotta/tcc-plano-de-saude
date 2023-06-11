@@ -101,7 +101,7 @@ const ProfissionalForm = (props) => {
     };
 
     return (
-        <Grid container rowSpacing={4} columnSpacing={2}>
+        <Grid container rowSpacing={3}>
             <Grid item xs={12}>
                 <Typography variant="h3">Profissional</Typography>
                 <Divider />

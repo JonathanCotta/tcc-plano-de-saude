@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Typography, Paper, Divider, Grid, styled, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Paper, Divider, Grid, styled } from '@mui/material';
 import {
     DataGrid,
     GridToolbarContainer,
@@ -8,21 +7,22 @@ import {
     GridToolbarQuickFilter,
     ptBR
 } from '@mui/x-data-grid';
+import { useDispatch } from 'react-redux';
 
-const rows = [
-    { id: 1, name: 'Hello', classificacao: 'Individual' },
-    { id: 2, name: 'DataGridPro', classificacao: 'Empresarial' },
-    { id: 3, name: 'MUI', classificacao: 'Empresarial' }
-];
+import { openDialog } from 'store/reducers/dialog';
+import CONSTANTS from 'utils/CONSTANTS';
 
 const columns = [
-    { field: 'id', headerName: 'Id', sortable: false, minWidth: 100 },
-    { field: 'name', headerName: 'Nome', minWidth: 230 },
-    { field: 'classificacao', headerName: 'Classificação', minWidth: 210 }
+    { field: 'action', sortable: false, headerName: 'Cancelar', minWidth: 80 },
+    { field: 'data', headerName: 'Data', sortable: true, minWidth: 120 },
+    { field: 'conveniado', headerName: 'Converniado', minWidth: 200 },
+    { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
+    { field: 'logradouro', headerName: 'Logradouro', minWidth: 200 },
+    { field: 'numeroEndereco', headerName: 'Nº', minWidth: 80 }
 ];
 
 // eslint-disable-next-line no-unused-vars
-const PlanoListStyle = styled('div')((_PlanoList) => ({
+const ConsultaListStyle = styled('div')((_ConsultaList) => ({
     '.MuiDataGrid-columnHeaders': {
         backgroundColor: '#4d4d4d',
         color: '#fff',
@@ -39,12 +39,12 @@ const PlanoListStyle = styled('div')((_PlanoList) => ({
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
-            <Grid container>
+            <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
                 <Grid item xs={3}>
                     <GridToolbarFilterButton />
                 </Grid>
-                <Grid item xs={4} />
-                <Grid item xs={5}>
+
+                <Grid item xs={3}>
                     <GridToolbarQuickFilter />
                 </Grid>
             </Grid>
@@ -53,40 +53,34 @@ function CustomToolbar() {
 }
 
 // eslint-disable-next-line no-unused-vars
-const PlanoList = (_props) => {
-    const navigate = useNavigate();
+const ConsultaList = (_props) => {
+    const dispatch = useDispatch();
 
-    const handleRowClick = (tableEvent) => {
-        return navigate(`/plano/editar/${tableEvent.id}`);
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {}, []);
+
+    const handleRowDoubleClick = () => {
+        dispatch(openDialog({ message: CONSTANTS.SCHEDULE_CANCEL_CONFIRMATION_MESSAGE }));
     };
 
     return (
-        <PlanoListStyle>
-            <Grid container rowSpacing={3}>
+        <ConsultaListStyle>
+            <Grid container rowSpacing={4}>
                 <Grid item xs={12}>
-                    <Typography variant="h3">Planos</Typography>
+                    <Typography variant="h3">Consultas</Typography>
                     <Divider />
                 </Grid>
-                <Grid item xs={6} sx={{ mb: -2.25 }}>
+                <Grid item xs={12} sx={{ mb: -2.25 }}>
                     <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                         <Grid container rowSpacing={4}>
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="outlined"
-                                    size="small"
-                                    component={Link}
-                                    to="/plano/criar"
-                                >
-                                    Criar
-                                </Button>
-                            </Grid>
-
+                            <Grid container item></Grid>
                             <Grid item xs={12} style={{ height: 480 }}>
                                 <DataGrid
                                     rows={rows}
                                     columns={columns}
-                                    pageSize={10}
-                                    onRowDoubleClick={handleRowClick}
+                                    pageSize={20}
+                                    onRowDoubleClick={handleRowDoubleClick}
                                     components={{ Toolbar: CustomToolbar }}
                                     localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                                     disableColumnSelector
@@ -103,8 +97,8 @@ const PlanoList = (_props) => {
                     </Paper>
                 </Grid>
             </Grid>
-        </PlanoListStyle>
+        </ConsultaListStyle>
     );
 };
 
-export default PlanoList;
+export default ConsultaList;
