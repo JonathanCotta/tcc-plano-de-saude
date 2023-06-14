@@ -10,7 +10,8 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    FormHelperText
+    FormHelperText,
+    IconButton
 } from '@mui/material';
 import {
     DataGrid,
@@ -19,23 +20,61 @@ import {
     GridToolbarQuickFilter,
     ptBR
 } from '@mui/x-data-grid';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 
-import { openDialog } from 'store/reducers/dialog';
+import ConsultaDialog from 'components/ConsultaDialog';
+import { openDialog } from 'store/reducers/consultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
 
+const ScheduleButton = ({ rowId }) => {
+    const dispatch = useDispatch();
+
+    const handleClick = () => {
+        dispatch(
+            openDialog({
+                action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
+                message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
+                consultaId: rowId
+            })
+        );
+    };
+
+    return (
+        <IconButton color="success" onClick={handleClick}>
+            <CheckCircleOutlined />
+        </IconButton>
+    );
+};
+
+const rowsMock = [
+    {
+        id: 1,
+        data: '01/01/2021',
+        conveniado: 'João',
+        bairro: 'Bairro',
+        bairro: 'Rua',
+        profissional: '123'
+    }
+];
+
 const columns = [
-    { field: 'action', sortable: false, headerName: 'Marcar', minWidth: 80 },
+    {
+        field: 'action',
+        sortable: false,
+        headerName: 'Marcar',
+        minWidth: 80,
+        renderCell: (params) => <ScheduleButton rowId={params.id} />
+    },
     { field: 'data', type: 'date', headerName: 'Data', minWidth: 150 },
     { field: 'conveniado', headerName: 'Conveniado', minWidth: 250 },
     { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
     { field: 'profissional', headerName: 'Profissional', minWidth: 250 }
 ];
 
-// eslint-disable-next-line no-unused-vars
-const ConsultaScheduleStyle = styled('div')((_ConsultaList) => ({
+const ConsultaScheduleStyle = styled('div')(() => ({
     '.MuiDataGrid-columnHeaders': {
         backgroundColor: '#4d4d4d',
         color: '#fff',
@@ -73,14 +112,19 @@ const formikValidationSchema = Yup.object().shape({
     especialidade: Yup.string().required('Especialidade é obrigatária')
 });
 
-// eslint-disable-next-line no-unused-vars
-const ConsultaSchedule = (_props) => {
+const ConsultaSchedule = () => {
     const dispatch = useDispatch();
 
-    const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState(rowsMock);
 
-    const handleRowClick = (tableEvent) => {
-        dispatch(openDialog({ message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE }));
+    const handleRowClick = ({ id }) => {
+        dispatch(
+            openDialog({
+                message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
+                action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
+                consultaId: id
+            })
+        );
     };
 
     return (
@@ -224,6 +268,7 @@ const ConsultaSchedule = (_props) => {
                     </Paper>
                 </Grid>
             </Grid>
+            <ConsultaDialog />
         </ConsultaScheduleStyle>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Paper, Divider, Grid, styled } from '@mui/material';
+import { Typography, Paper, Divider, Grid, styled, IconButton } from '@mui/material';
 import {
     DataGrid,
     GridToolbarContainer,
@@ -8,14 +8,53 @@ import {
     ptBR
 } from '@mui/x-data-grid';
 import { useDispatch } from 'react-redux';
+import { CloseCircleFilled } from '@ant-design/icons';
 
-import { openDialog } from 'store/reducers/dialog';
+import { openDialog } from 'store/reducers/consultaDialog';
+import ConsultaDialog from 'components/ConsultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
 
+const rowsMock = [
+    {
+        id: 1,
+        data: '01/01/2021',
+        conveniado: 'João',
+        bairro: 'Bairro',
+        logradouro: 'Rua',
+        numeroEndereco: '123'
+    }
+];
+
+const CancelButton = ({ rowId }) => {
+    const dispatch = useDispatch();
+
+    const handleClick = () => {
+        dispatch(
+            openDialog({
+                action: CONSTANTS.SCHEDULE_CANCEL_ACTION,
+                message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE,
+                consultaId: rowId
+            })
+        );
+    };
+
+    return (
+        <IconButton color="error" onClick={handleClick}>
+            <CloseCircleFilled />
+        </IconButton>
+    );
+};
+
 const columns = [
-    { field: 'action', sortable: false, headerName: 'Cancelar', minWidth: 80 },
+    {
+        field: 'action',
+        sortable: false,
+        headerName: 'Cancelar',
+        minWidth: 80,
+        renderCell: (params) => <CancelButton rowId={params.id} />
+    },
     { field: 'data', headerName: 'Data', sortable: true, minWidth: 120 },
-    { field: 'conveniado', headerName: 'Converniado', minWidth: 200 },
+    { field: 'conveniado', headerName: 'Conveniado', minWidth: 200 },
     { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
     { field: 'logradouro', headerName: 'Logradouro', minWidth: 200 },
     { field: 'numeroEndereco', headerName: 'Nº', minWidth: 80 }
@@ -54,14 +93,20 @@ function CustomToolbar() {
 
 // eslint-disable-next-line no-unused-vars
 const ConsultaList = (_props) => {
-    const dispatch = useDispatch();
+    const [rows, setRows] = useState(rowsMock);
 
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
 
     useEffect(() => {}, []);
 
-    const handleRowDoubleClick = () => {
-        dispatch(openDialog({ message: CONSTANTS.SCHEDULE_CANCEL_CONFIRMATION_MESSAGE }));
+    const handleRowDoubleClick = ({ id }) => {
+        dispatch(
+            openDialog({
+                action: CONSTANTS.SCHEDULE_CANCEL_ACTION,
+                message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE,
+                consultaId: id
+            })
+        );
     };
 
     return (
@@ -97,6 +142,7 @@ const ConsultaList = (_props) => {
                     </Paper>
                 </Grid>
             </Grid>
+            <ConsultaDialog />
         </ConsultaListStyle>
     );
 };

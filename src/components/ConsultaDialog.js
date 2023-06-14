@@ -10,10 +10,10 @@ import {
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { closeDialog } from '../store/reducers/dialog';
+import { closeDialog } from '../store/reducers/consultaDialog';
 
 export default function ConsultaDialog() {
-    const dialogState = useSelector((state) => state.dialog);
+    const { open, message, action, consultaId } = useSelector((state) => state.consultaDialog);
 
     const dispatch = useDispatch();
 
@@ -21,9 +21,13 @@ export default function ConsultaDialog() {
         dispatch(closeDialog());
     };
 
+    const handleConfirm = () => {
+        console.log(action, consultaId);
+    };
+
     return (
         <Dialog
-            open={dialogState.open}
+            open={open}
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -32,12 +36,10 @@ export default function ConsultaDialog() {
                 <Typography>Confirmação</Typography>
             </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    {dialogState.message}
-                </DialogContentText>
+                <DialogContentText id="alert-dialog-description">{message}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" onClick={handleClose}>
+                <Button variant="outlined" onClick={handleConfirm}>
                     Sim
                 </Button>
                 <Button variant="outlined" color="error" onClick={handleClose}>
