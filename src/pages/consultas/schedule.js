@@ -143,7 +143,15 @@ const ConsultaSchedule = () => {
                                     validationSchema={formikValidationSchema}
                                     onSubmit={async (values, { setSubmitting }) => {}}
                                 >
-                                    {({ errors, handleChange, handleSubmit, values }) => (
+                                    {({
+                                        errors,
+                                        handleChange,
+                                        handleSubmit,
+                                        isSubmitting,
+                                        values,
+                                        touched,
+                                        handleBlur
+                                    }) => (
                                         <form noValidate onSubmit={handleSubmit}>
                                             <Grid
                                                 container
@@ -156,7 +164,7 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={!!errors.estado}
+                                                        error={touched.estado && errors.estado}
                                                     >
                                                         <InputLabel id="estado-select-label">
                                                             Estado
@@ -164,15 +172,17 @@ const ConsultaSchedule = () => {
                                                         <Select
                                                             labelId="estado-select-label"
                                                             id="estado"
+                                                            name="estado"
                                                             onChange={handleChange}
+                                                            handleBlur={handleBlur}
                                                             value={values.estado}
                                                         >
-                                                            <MenuItem value={'enfermaria'}>
-                                                                RJ
-                                                            </MenuItem>
+                                                            <MenuItem value={'RJ'}>RJ</MenuItem>
                                                         </Select>
                                                         <FormHelperText>
-                                                            {errors.estado || ''}
+                                                            {touched.estado && errors.estado
+                                                                ? errors.estado
+                                                                : ''}
                                                         </FormHelperText>
                                                     </FormControl>
                                                 </Grid>
@@ -180,7 +190,7 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={!!errors.cidade}
+                                                        error={touched.cidade && errors.cidade}
                                                     >
                                                         <InputLabel id="cidade-select-label">
                                                             Cidade
@@ -188,21 +198,25 @@ const ConsultaSchedule = () => {
                                                         <Select
                                                             labelId="cidade-select-label"
                                                             id="cidade"
+                                                            name="cidade"
                                                             onChange={handleChange}
+                                                            onBlur={handleBlur}
                                                             value={values.cidade}
                                                         >
-                                                            <MenuItem value={'enfermaria'}>
+                                                            <MenuItem value={'Rio de Janeiro'}>
                                                                 Rio de Janeiro
                                                             </MenuItem>
-                                                            <MenuItem value={'quartoCompartilhado'}>
+                                                            <MenuItem value={'Niteroi'}>
                                                                 Niteroi
                                                             </MenuItem>
-                                                            <MenuItem value={'quartoIndividual'}>
+                                                            <MenuItem value={'Caxias'}>
                                                                 Caxias
                                                             </MenuItem>
                                                         </Select>
                                                         <FormHelperText>
-                                                            {errors.cidade || ''}
+                                                            {errors.cidade && touched.cidade
+                                                                ? errors.cidade
+                                                                : ''}
                                                         </FormHelperText>
                                                     </FormControl>
                                                 </Grid>
@@ -210,7 +224,10 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={!!errors.especialidade}
+                                                        error={
+                                                            touched.especialidade &&
+                                                            errors.especialidade
+                                                        }
                                                     >
                                                         <InputLabel id="especialidade-select-label">
                                                             Especialidade
@@ -218,7 +235,9 @@ const ConsultaSchedule = () => {
                                                         <Select
                                                             labelId="especialidade-select-label"
                                                             id="especialidade"
+                                                            name="especialidade"
                                                             onChange={handleChange}
+                                                            handleBlur={handleBlur}
                                                             value={values.especialidade}
                                                         >
                                                             <MenuItem value={'enfermaria'}>
@@ -232,12 +251,19 @@ const ConsultaSchedule = () => {
                                                             </MenuItem>
                                                         </Select>
                                                         <FormHelperText>
-                                                            {errors.especialidade || ''}
+                                                            {errors.especialidade &&
+                                                            touched.especialidade
+                                                                ? errors.especialidade
+                                                                : ''}
                                                         </FormHelperText>
                                                     </FormControl>
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    <Button variant="contained" type="submit">
+                                                    <Button
+                                                        variant="contained"
+                                                        type="submit"
+                                                        disable={isSubmitting}
+                                                    >
                                                         Buscar
                                                     </Button>
                                                 </Grid>
