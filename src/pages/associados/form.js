@@ -12,7 +12,8 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    FormHelperText
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Formik } from 'formik';
@@ -153,7 +154,15 @@ const AssociadoForm = (props) => {
                                     });
                             }}
                         >
-                            {({ errors, handleChange, handleSubmit, setFieldValue, values }) => (
+                            {({
+                                errors,
+                                handleChange,
+                                handleBlur,
+                                handleSubmit,
+                                setFieldValue,
+                                values,
+                                touched
+                            }) => (
                                 <form noValidate onSubmit={handleSubmit}>
                                     <Grid container rowSpacing={4} columnSpacing={6}>
                                         <Grid item xs={12} style={{ marginTop: 20 }}>
@@ -166,9 +175,10 @@ const AssociadoForm = (props) => {
                                                     id="nome"
                                                     label="Nome"
                                                     name="nome"
-                                                    error={!!errors.nome}
+                                                    error={touched.nome && errors.nome}
                                                     helperText={errors.nome || ''}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     type="text"
                                                     value={values.nome}
                                                     variant="standard"
@@ -182,8 +192,9 @@ const AssociadoForm = (props) => {
                                                     id="sobrenome"
                                                     name="sobrenome"
                                                     label="Sobrenome"
-                                                    error={!!errors.sobrenome}
+                                                    error={touched.sobrenome && errors.sobrenome}
                                                     helperText={errors.sobrenome || ''}
+                                                    onBlur={handleBlur}
                                                     type="text"
                                                     variant="standard"
                                                     value={values.sobrenome}
@@ -198,9 +209,10 @@ const AssociadoForm = (props) => {
                                                     id="cpf"
                                                     name="cpf"
                                                     label="CPF"
-                                                    error={!!errors.cpf}
+                                                    error={touched.cpf && errors.cpf}
                                                     helperText={errors.cpf || '000.000.000-00'}
                                                     type="text"
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     value={values.cpf}
                                                     onChange={handleChange}
@@ -212,7 +224,10 @@ const AssociadoForm = (props) => {
                                             <DatePicker
                                                 id="dataNascimento"
                                                 label="Data de Nascimento"
-                                                error={!!errors.dataNascimento}
+                                                onBlur={handleBlur}
+                                                error={
+                                                    touched.dataNascimento && errors.dataNascimento
+                                                }
                                                 format="DD-MM-YYYY"
                                                 onChange={(value) => {
                                                     setFieldValue(
@@ -229,7 +244,7 @@ const AssociadoForm = (props) => {
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={4}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="escolaridade-select-label">
                                                     Formação
                                                 </InputLabel>
@@ -237,10 +252,12 @@ const AssociadoForm = (props) => {
                                                     labelId="escolaridade-select-label"
                                                     id="escolaridade"
                                                     name="escolaridade"
-                                                    error={!!errors.escolaridade}
-                                                    helperText={errors.escolaridade || ''}
+                                                    error={
+                                                        touched.escolaridade && errors.escolaridade
+                                                    }
                                                     value={values.escolaridade}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                 >
                                                     <MenuItem value={'segundograu'}>
                                                         2º Grau
@@ -252,6 +269,11 @@ const AssociadoForm = (props) => {
                                                         Primário
                                                     </MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.escolaridade && touched.escolaridade
+                                                        ? errors.escolaridade
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} style={{ marginTop: 20 }}>
@@ -259,16 +281,16 @@ const AssociadoForm = (props) => {
                                             <Divider />
                                         </Grid>
                                         <Grid item xs={12} md={2}>
-                                            <FormControl nvariant="standard" fullWidth required>
+                                            <FormControl nvariant="standard" fullWidth>
                                                 <InputLabel id="estado-select-label">
                                                     Estado
                                                 </InputLabel>
                                                 <Select
                                                     name="estado"
                                                     value={values.estado}
-                                                    error={!!errors.estado}
-                                                    helperText={errors.estado || ''}
+                                                    error={touched.estado && errors.estado}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     labelId="estado-select-label"
                                                     id="estado"
                                                 >
@@ -276,6 +298,11 @@ const AssociadoForm = (props) => {
                                                     <MenuItem value={'sp'}>SP</MenuItem>
                                                     <MenuItem value={'mg'}>MG</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.estado && touched.estado
+                                                        ? errors.estado
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={2}>
@@ -285,10 +312,11 @@ const AssociadoForm = (props) => {
                                                     label="cep"
                                                     name="cep"
                                                     type="number"
-                                                    error={!!errors.cep}
+                                                    error={touched.cep && errors.cep}
                                                     helperText={errors.cep || ''}
                                                     value={values.cep}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     size="normal"
                                                     disabled={formConfig.fieldsDisable}
@@ -296,7 +324,7 @@ const AssociadoForm = (props) => {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="cidade-select-label">
                                                     Cidade
                                                 </InputLabel>
@@ -304,9 +332,9 @@ const AssociadoForm = (props) => {
                                                     labelId="cidade-select-label"
                                                     id="cidade"
                                                     name="cidade"
-                                                    error={!!errors.cidade}
-                                                    helperText={errors.cidade || ''}
+                                                    error={touched.cidade && errors.cidade}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     value={values.cidade}
                                                 >
                                                     <MenuItem value={'niteroi'}>Niteroi</MenuItem>
@@ -323,9 +351,10 @@ const AssociadoForm = (props) => {
                                                     id="bairro"
                                                     label="Bairro"
                                                     name="bairro"
-                                                    error={!!errors.bairro}
+                                                    error={touched.bairro && errors.bairro}
                                                     helperText={errors.bairro || ''}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     type="text"
                                                     value={values.bairro}
                                                     variant="standard"
@@ -334,23 +363,31 @@ const AssociadoForm = (props) => {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="tipo-logradouro-select-label">
                                                     Tipo Logradouro
                                                 </InputLabel>
                                                 <Select
                                                     labelId="tipo-logradouro-select-label"
                                                     id="tipoLogradouro"
-                                                    error={!!errors.tipoLogradouro}
-                                                    helperText={errors.tipoLogradouro || ''}
+                                                    error={
+                                                        touched.tipoLogradouro &&
+                                                        errors.tipoLogradouro
+                                                    }
                                                     name="tipoLogradouro"
                                                     value={values.tipoLogradouro}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                 >
                                                     <MenuItem value={'avenida'}>Avenida</MenuItem>
                                                     <MenuItem value={'rua'}>Rua</MenuItem>
                                                     <MenuItem value={'alameda'}>Alameda</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.tipoLogradouro && touched.tipoLogradouro
+                                                        ? errors.tipoLogradouro
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
@@ -359,9 +396,10 @@ const AssociadoForm = (props) => {
                                                     id="logradouro"
                                                     label="Logradouro"
                                                     name="logradouro"
-                                                    error={!!errors.logradouro}
+                                                    error={touched.logradouro && errors.logradouro}
                                                     helperText={errors.logradouro || ''}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     type="text"
                                                     value={values.logradouro}
                                                     variant="standard"
@@ -376,10 +414,13 @@ const AssociadoForm = (props) => {
                                                     label="Complemento"
                                                     name="complemento"
                                                     type="text"
-                                                    error={!!errors.complemento}
+                                                    error={
+                                                        touched.complemento && errors.complemento
+                                                    }
                                                     helperText={errors.complemento || ''}
                                                     value={values.complemento}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     disabled={formConfig.fieldsDisable}
                                                 />
@@ -392,10 +433,14 @@ const AssociadoForm = (props) => {
                                                     label="Numero"
                                                     name="numeroEndereco"
                                                     type="number"
-                                                    error={!!errors.numeroEndereco}
+                                                    error={
+                                                        touched.numeroEndereco &&
+                                                        errors.numeroEndereco
+                                                    }
                                                     helperText={errors.numeroEndereco || ''}
                                                     value={values.numeroEndereco}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     size="normal"
                                                     disabled={formConfig.fieldsDisable}
@@ -412,11 +457,12 @@ const AssociadoForm = (props) => {
                                                     id="celular"
                                                     label="Celular"
                                                     name="celular"
-                                                    error={!!errors.celular}
+                                                    error={touched.celular && errors.celular}
                                                     helperText={errors.celular || ''}
                                                     type="number"
                                                     value={values.celular}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     size="normal"
                                                     disabled={formConfig.fieldsDisable}
@@ -429,10 +475,11 @@ const AssociadoForm = (props) => {
                                                     id="email"
                                                     label="E-mail"
                                                     name="email"
-                                                    error={!!errors.email}
+                                                    error={touched.email && errors.email}
                                                     helperText={errors.email || ''}
                                                     value={userEmail}
                                                     onChange={(e) => setUserEmail(e.target.value)}
+                                                    onBlur={handleBlur}
                                                     type="text"
                                                     variant="standard"
                                                     disabled={formConfig.fieldsDisable}
@@ -444,7 +491,7 @@ const AssociadoForm = (props) => {
                                             <Divider />
                                         </Grid>
                                         <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="tipo-plano-select-label">
                                                     Tipo do Plano
                                                 </InputLabel>
@@ -452,20 +499,25 @@ const AssociadoForm = (props) => {
                                                     labelId="tipo-plano-select-label"
                                                     id="tipoPlano"
                                                     name="tipoPlano"
-                                                    error={!!errors.tipoPlano}
-                                                    helperText={errors.tipoPlano || ''}
+                                                    error={touched.tipoPlano && errors.tipoPlano}
                                                     value={values.tipoPlano}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                 >
                                                     <MenuItem value={'individual'}>
                                                         Individual
                                                     </MenuItem>
                                                     <MenuItem value={'empresa'}>Empresa</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.tipoPlano && touched.tipoPlano
+                                                        ? errors.tipoPlano
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="plano-select-label">
                                                     Plano
                                                 </InputLabel>
@@ -473,14 +525,19 @@ const AssociadoForm = (props) => {
                                                     labelId="plano-select-label"
                                                     id="plano"
                                                     name="plano"
-                                                    error={!!errors.plano}
+                                                    error={touched.plano && errors.plano}
                                                     value={values.plano}
                                                     onChange={handleChange}
-                                                    helperText={errors.plano || ''}
+                                                    onBlur={handleBlur}
                                                 >
                                                     <MenuItem value={'blue'}>Blue</MenuItem>
                                                     <MenuItem value={'green'}>Green</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.plano && touched.plano
+                                                        ? errors.plano
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={2}>
@@ -489,11 +546,15 @@ const AssociadoForm = (props) => {
                                                     id="codigoCliente"
                                                     label="Número da carteira"
                                                     name="codigoCliente"
-                                                    error={!!errors.codigoCliente}
+                                                    error={
+                                                        touched.codigoCliente &&
+                                                        errors.codigoCliente
+                                                    }
                                                     helperText={errors.codigoCliente || ''}
                                                     type="number"
                                                     value={values.codigoCliente}
                                                     onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     variant="standard"
                                                     size="normal"
                                                     disabled={formConfig.fieldsDisable}
@@ -509,15 +570,22 @@ const AssociadoForm = (props) => {
                                                     labelId="status-plano-select-label"
                                                     id="statusPlano"
                                                     name="statusPlano"
-                                                    error={!!errors.statusPlano}
+                                                    error={
+                                                        touched.statusPlano && errors.statusPlano
+                                                    }
                                                     value={values.statusPlano}
                                                     onChange={handleChange}
-                                                    helperText={errors.statusPlano || ''}
+                                                    onBlur={handleBlur}
                                                 >
                                                     <MenuItem value={'ativo'}>Ativo</MenuItem>
                                                     <MenuItem value={'analise'}>Análise</MenuItem>
                                                     <MenuItem value={'inativo'}>Inativo</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.statusPlano && touched.statusPlano
+                                                        ? errors.statusPlano
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid
