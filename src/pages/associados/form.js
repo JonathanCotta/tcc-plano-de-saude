@@ -21,12 +21,12 @@ import { useDispatch } from 'react-redux';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import * as Yup from 'yup';
-import { SearchOutlined } from '@ant-design/icons';
 
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
 import CONSTANTS from 'utils/CONSTANTS';
 import { auth, db } from 'firebaseApp';
+import { setUser } from 'store/reducers/user';
 
 const formConfigByAction = {
     edit: {
@@ -43,6 +43,52 @@ const formConfigByAction = {
 
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
 
+const formInitalValues = {
+    nome: '',
+    sobrenome: '',
+    cpf: '',
+    dataNascimento: 0,
+    escolaridade: '',
+    estado: '',
+    cidade: '',
+    tipoLogradouro: '',
+    logradouro: '',
+    numeroEndereco: '',
+    complemento: '',
+    bairro: '',
+    cep: '',
+    celular: '',
+    email: '',
+    tipoPlano: '',
+    codigoCliente: '',
+    plano: '',
+    statusPlano: 'ativo'
+};
+
+const formValidationSchema = Yup.object().shape({
+    nome: Yup.string().required('Nome é obrigatário'),
+    sobrenome: Yup.string().required('Sobrenome é obrigatário'),
+    cpf: Yup.string().required('CPF é obrigatário').matches(cpfRegex, 'CPF inválido'),
+    // dataNascimento: Yup.date().required(
+    //     'Data de nascimento é obrigatária'
+    // ),
+    escolaridade: Yup.string().required('Escolaridade é obrigatária'),
+    estado: Yup.string().required('Estado é obrigatário'),
+    cidade: Yup.string().required('Cidade é obrigatária'),
+    tipoLogradouro: Yup.string().required('Tipo de logradouro é obrigatário'),
+    logradouro: Yup.string().required('Logradouro é obrigatário'),
+    numeroEndereco: Yup.number().required('NÚmero de endereço é obrigatário'),
+    complemento: Yup.string().required('Complemento é obrigatário'),
+    bairro: Yup.string().required('Bairro é obrigatário'),
+    cep: Yup.number().required('CEP é obrigatário'),
+    celular: Yup.number().required('Celular é obrigatário'),
+    email: Yup.string().required('E-mail é obrigatário'),
+    tipoPlano: Yup.string().required('Tipo de plano é obrigatário'),
+    plano: Yup.string().required('Plano é obrigatário'),
+    codigoCliente: Yup.string().required('Numero da carteira é obrigatário'),
+    statusPlano: Yup.string().required('Status do plano é obrigatário')
+});
+
 const AssociadoForm = (props) => {
     const { formAction } = props;
 
@@ -50,15 +96,16 @@ const AssociadoForm = (props) => {
     const urlParams = useParams();
     const navigate = useNavigate();
     const [user] = useAuthState(auth);
-    const [userEmail, setUserEmail] = useState('');
+    const [initialValues, setInitialValues] = useState(formInitalValues);
 
     const formConfig = formConfigByAction[formAction];
 
     useEffect(() => {
-        if (user && user.uid !== urlParams.id) {
-            setUserEmail(user.email);
+        if (user && user.uid === urlParams.id) {
+            const newValues = { ...initialValues, email: user.email };
+            setInitialValues(newValues);
         }
-    }, [user, urlParams]);
+    }, [user, urlParams, formAction, initialValues]);
 
     const handleGoBackClick = () => {
         navigate(-1);
@@ -66,6 +113,29 @@ const AssociadoForm = (props) => {
 
     const handleRemoveClick = () => {
         dispatch(openDialog({ message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE }));
+    };
+
+    const handleFormSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
+        try {
+            const userDoc = {
+                ...values,
+                uid: urlParams.id,
+                tipo: 'associado',
+                isRegistryComplete: true
+            };
+
+            await setDoc(doc(db, 'users', urlParams.id), userDoc);
+
+            setStatus({ success: true });
+            setUser(userDoc);
+            setSubmitting(true);
+            navigate('/');
+        } catch (err) {
+            console.error(err);
+            setStatus({ success: false });
+            setErrors({ submit: err.message });
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -78,81 +148,10 @@ const AssociadoForm = (props) => {
                 <Paper elevation={1} style={{ padding: 20, paddingBottom: 20 }}>
                     <Box>
                         <Formik
-                            initialValues={{
-                                nome: '',
-                                sobrenome: '',
-                                cpf: '',
-                                dataNascimento: 0,
-                                escolaridade: '',
-                                estado: '',
-                                cidade: '',
-                                tipoLogradouro: '',
-                                logradouro: '',
-                                numeroEndereco: '',
-                                complemento: '',
-                                bairro: '',
-                                cep: '',
-                                celular: '',
-                                email: '',
-                                tipoPlano: '',
-                                codigoCliente: '',
-                                plano: '',
-                                statusPlano: 'ativo'
-                            }}
-                            validationSchema={Yup.object().shape({
-                                nome: Yup.string().required('Nome é obrigatário'),
-                                sobrenome: Yup.string().required('Sobrenome é obrigatário'),
-                                cpf: Yup.string()
-                                    .required('CPF é obrigatário')
-                                    .matches(cpfRegex, 'CPF inválido'),
-                                dataNascimento: Yup.date().required(
-                                    'Data de nascimento é obrigatária'
-                                ),
-                                escolaridade: Yup.string().required('Escolaridade é obrigatária'),
-                                estado: Yup.string().required('Estado é obrigatário'),
-                                cidade: Yup.string().required('Cidade é obrigatária'),
-                                tipoLogradouro: Yup.string().required(
-                                    'Tipo de logradouro é obrigatário'
-                                ),
-                                logradouro: Yup.string().required('Logradouro é obrigatário'),
-                                numeroEndereco: Yup.number().required(
-                                    'NÚmero de endereço é obrigatário'
-                                ),
-                                complemento: Yup.string().required('Complemento é obrigatário'),
-                                bairro: Yup.string().required('Bairro é obrigatário'),
-                                cep: Yup.number().required('CEP é obrigatário'),
-                                celular: Yup.number().required('Celular é obrigatário'),
-                                email: Yup.string().required('E-mail é obrigatário'),
-                                tipoPlano: Yup.string().required('Tipo de plano é obrigatário'),
-                                plano: Yup.string().required('Plano é obrigatário'),
-                                codigoCliente: Yup.string().required(
-                                    'Numero da carteira é obrigatário'
-                                ),
-                                statusPlano: Yup.string().required('Status do plano é obrigatário')
-                            })}
-                            onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                                const { email } = user;
-                                const userDoc = {
-                                    ...values,
-                                    uid: urlParams,
-                                    email,
-                                    tipo: 'associado',
-                                    isRegistryComplete: true
-                                };
-
-                                setDoc(doc(db, 'users', urlParams), userDoc)
-                                    .then(() => {
-                                        setStatus({ success: true });
-                                        setSubmitting(true);
-                                        navigate('/');
-                                    })
-                                    .catch((err) => {
-                                        console.error(err);
-                                        setStatus({ success: false });
-                                        setErrors({ submit: err.message });
-                                        setSubmitting(false);
-                                    });
-                            }}
+                            enableReinitialize
+                            initialValues={initialValues}
+                            validationSchema={formValidationSchema}
+                            onSubmit={handleFormSubmit}
                         >
                             {({
                                 errors,
@@ -160,6 +159,7 @@ const AssociadoForm = (props) => {
                                 handleBlur,
                                 handleSubmit,
                                 setFieldValue,
+                                isSubmitting,
                                 values,
                                 touched
                             }) => (
@@ -175,7 +175,7 @@ const AssociadoForm = (props) => {
                                                     id="nome"
                                                     label="Nome"
                                                     name="nome"
-                                                    error={touched.nome && errors.nome}
+                                                    error={Boolean(touched.nome && errors.nome)}
                                                     helperText={errors.nome || ''}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -192,7 +192,9 @@ const AssociadoForm = (props) => {
                                                     id="sobrenome"
                                                     name="sobrenome"
                                                     label="Sobrenome"
-                                                    error={touched.sobrenome && errors.sobrenome}
+                                                    error={Boolean(
+                                                        touched.sobrenome && errors.sobrenome
+                                                    )}
                                                     helperText={errors.sobrenome || ''}
                                                     onBlur={handleBlur}
                                                     type="text"
@@ -209,7 +211,7 @@ const AssociadoForm = (props) => {
                                                     id="cpf"
                                                     name="cpf"
                                                     label="CPF"
-                                                    error={touched.cpf && errors.cpf}
+                                                    error={Boolean(touched.cpf && errors.cpf)}
                                                     helperText={errors.cpf || '000.000.000-00'}
                                                     type="text"
                                                     onBlur={handleBlur}
@@ -225,9 +227,9 @@ const AssociadoForm = (props) => {
                                                 id="dataNascimento"
                                                 label="Data de Nascimento"
                                                 onBlur={handleBlur}
-                                                error={
+                                                error={Boolean(
                                                     touched.dataNascimento && errors.dataNascimento
-                                                }
+                                                )}
                                                 format="DD-MM-YYYY"
                                                 onChange={(value) => {
                                                     setFieldValue(
@@ -252,9 +254,9 @@ const AssociadoForm = (props) => {
                                                     labelId="escolaridade-select-label"
                                                     id="escolaridade"
                                                     name="escolaridade"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.escolaridade && errors.escolaridade
-                                                    }
+                                                    )}
                                                     value={values.escolaridade}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -281,14 +283,14 @@ const AssociadoForm = (props) => {
                                             <Divider />
                                         </Grid>
                                         <Grid item xs={12} md={2}>
-                                            <FormControl nvariant="standard" fullWidth>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="estado-select-label">
                                                     Estado
                                                 </InputLabel>
                                                 <Select
                                                     name="estado"
                                                     value={values.estado}
-                                                    error={touched.estado && errors.estado}
+                                                    error={Boolean(touched.estado && errors.estado)}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     labelId="estado-select-label"
@@ -312,7 +314,7 @@ const AssociadoForm = (props) => {
                                                     label="cep"
                                                     name="cep"
                                                     type="number"
-                                                    error={touched.cep && errors.cep}
+                                                    error={Boolean(touched.cep && errors.cep)}
                                                     helperText={errors.cep || ''}
                                                     value={values.cep}
                                                     onChange={handleChange}
@@ -332,7 +334,7 @@ const AssociadoForm = (props) => {
                                                     labelId="cidade-select-label"
                                                     id="cidade"
                                                     name="cidade"
-                                                    error={touched.cidade && errors.cidade}
+                                                    error={Boolean(touched.cidade && errors.cidade)}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     value={values.cidade}
@@ -351,7 +353,7 @@ const AssociadoForm = (props) => {
                                                     id="bairro"
                                                     label="Bairro"
                                                     name="bairro"
-                                                    error={touched.bairro && errors.bairro}
+                                                    error={Boolean(touched.bairro && errors.bairro)}
                                                     helperText={errors.bairro || ''}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -370,10 +372,10 @@ const AssociadoForm = (props) => {
                                                 <Select
                                                     labelId="tipo-logradouro-select-label"
                                                     id="tipoLogradouro"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.tipoLogradouro &&
-                                                        errors.tipoLogradouro
-                                                    }
+                                                            errors.tipoLogradouro
+                                                    )}
                                                     name="tipoLogradouro"
                                                     value={values.tipoLogradouro}
                                                     onChange={handleChange}
@@ -396,7 +398,9 @@ const AssociadoForm = (props) => {
                                                     id="logradouro"
                                                     label="Logradouro"
                                                     name="logradouro"
-                                                    error={touched.logradouro && errors.logradouro}
+                                                    error={Boolean(
+                                                        touched.logradouro && errors.logradouro
+                                                    )}
                                                     helperText={errors.logradouro || ''}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -414,9 +418,9 @@ const AssociadoForm = (props) => {
                                                     label="Complemento"
                                                     name="complemento"
                                                     type="text"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.complemento && errors.complemento
-                                                    }
+                                                    )}
                                                     helperText={errors.complemento || ''}
                                                     value={values.complemento}
                                                     onChange={handleChange}
@@ -433,10 +437,10 @@ const AssociadoForm = (props) => {
                                                     label="Numero"
                                                     name="numeroEndereco"
                                                     type="number"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.numeroEndereco &&
-                                                        errors.numeroEndereco
-                                                    }
+                                                            errors.numeroEndereco
+                                                    )}
                                                     helperText={errors.numeroEndereco || ''}
                                                     value={values.numeroEndereco}
                                                     onChange={handleChange}
@@ -457,7 +461,9 @@ const AssociadoForm = (props) => {
                                                     id="celular"
                                                     label="Celular"
                                                     name="celular"
-                                                    error={touched.celular && errors.celular}
+                                                    error={Boolean(
+                                                        touched.celular && errors.celular
+                                                    )}
                                                     helperText={errors.celular || ''}
                                                     type="number"
                                                     value={values.celular}
@@ -475,11 +481,10 @@ const AssociadoForm = (props) => {
                                                     id="email"
                                                     label="E-mail"
                                                     name="email"
-                                                    error={touched.email && errors.email}
+                                                    error={Boolean(touched.email && errors.email)}
                                                     helperText={errors.email || ''}
-                                                    value={userEmail}
-                                                    onChange={(e) => setUserEmail(e.target.value)}
-                                                    onBlur={handleBlur}
+                                                    value={values.email}
+                                                    onChange={handleChange}
                                                     type="text"
                                                     variant="standard"
                                                     disabled={formConfig.fieldsDisable}
@@ -499,7 +504,9 @@ const AssociadoForm = (props) => {
                                                     labelId="tipo-plano-select-label"
                                                     id="tipoPlano"
                                                     name="tipoPlano"
-                                                    error={touched.tipoPlano && errors.tipoPlano}
+                                                    error={Boolean(
+                                                        touched.tipoPlano && errors.tipoPlano
+                                                    )}
                                                     value={values.tipoPlano}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -525,7 +532,7 @@ const AssociadoForm = (props) => {
                                                     labelId="plano-select-label"
                                                     id="plano"
                                                     name="plano"
-                                                    error={touched.plano && errors.plano}
+                                                    error={Boolean(touched.plano && errors.plano)}
                                                     value={values.plano}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -546,10 +553,10 @@ const AssociadoForm = (props) => {
                                                     id="codigoCliente"
                                                     label="Número da carteira"
                                                     name="codigoCliente"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.codigoCliente &&
-                                                        errors.codigoCliente
-                                                    }
+                                                            errors.codigoCliente
+                                                    )}
                                                     helperText={errors.codigoCliente || ''}
                                                     type="number"
                                                     value={values.codigoCliente}
@@ -562,7 +569,7 @@ const AssociadoForm = (props) => {
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth required>
+                                            <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="status-plano-select-label">
                                                     Status do Plano
                                                 </InputLabel>
@@ -570,9 +577,9 @@ const AssociadoForm = (props) => {
                                                     labelId="status-plano-select-label"
                                                     id="statusPlano"
                                                     name="statusPlano"
-                                                    error={
+                                                    error={Boolean(
                                                         touched.statusPlano && errors.statusPlano
-                                                    }
+                                                    )}
                                                     value={values.statusPlano}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
@@ -600,7 +607,11 @@ const AssociadoForm = (props) => {
                                         >
                                             <Grid item>
                                                 {formConfig.saveEnabled && (
-                                                    <Button variant="contained" type="submit">
+                                                    <Button
+                                                        variant="contained"
+                                                        type="submit"
+                                                        disabled={isSubmitting}
+                                                    >
                                                         Salvar
                                                     </Button>
                                                 )}
@@ -611,6 +622,7 @@ const AssociadoForm = (props) => {
                                                         variant="contained"
                                                         color="error"
                                                         type="submit"
+                                                        disabled={isSubmitting}
                                                         onClick={handleRemoveClick}
                                                     >
                                                         Remover

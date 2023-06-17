@@ -24,7 +24,19 @@ import { auth } from 'firebaseApp';
 
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+const formInitalValues = {
+    email: '',
+    password: '',
+    submit: null
+};
+
+const formValidationSchema = Yup.object().shape({
+    email: Yup.string()
+        .email('Precisa ser um email válido')
+        .max(255)
+        .required('Email é obrigatório'),
+    password: Yup.string().max(255).required('Senha é obrigatória')
+});
 
 const AuthRegister = () => {
     const navigate = useNavigate();
@@ -49,43 +61,35 @@ const AuthRegister = () => {
         changePassword('');
     }, []);
 
+    const handleFormSubmit = async (values, { setErrors, setStatus, setSubmitting }) => {
+        try {
+            const { email, password } = values;
+            const authRequest = await createUserWithEmailAndPassword(email, password);
+
+            if (authRequest) {
+                const { user } = authRequest;
+                setStatus({ success: true });
+                setSubmitting(true);
+                navigate(`/associado/editar/${user.uid}`);
+            } else {
+                setStatus({ success: false });
+                setErrors({ submit: 'Erro no cadastro' });
+                setSubmitting(false);
+            }
+        } catch (err) {
+            console.error(err);
+            setStatus({ success: false });
+            setErrors({ submit: err.message });
+            setSubmitting(false);
+        }
+    };
+
     return (
         <>
             <Formik
-                initialValues={{
-                    email: '',
-                    password: '',
-                    submit: null
-                }}
-                validationSchema={Yup.object().shape({
-                    email: Yup.string()
-                        .email('Precisa ser um email válido')
-                        .max(255)
-                        .required('Email é obrigatório'),
-                    password: Yup.string().max(255).required('Senha é obrigatória')
-                })}
-                onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    try {
-                        const { email, password } = values;
-                        const authRequest = await createUserWithEmailAndPassword(email, password);
-
-                        if (authRequest) {
-                            const { user } = authRequest;
-                            setStatus({ success: true });
-                            setSubmitting(true);
-                            navigate(`/associado/editar/${user.uid}`);
-                        } else {
-                            setStatus({ success: false });
-                            setErrors({ submit: 'Erro no cadastro' });
-                            setSubmitting(false);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        setStatus({ success: false });
-                        setErrors({ submit: err.message });
-                        setSubmitting(false);
-                    }
-                }}
+                initialValues={formInitalValues}
+                validationSchema={formValidationSchema}
+                onSubmit={handleFormSubmit}
             >
                 {({
                     errors,
@@ -110,7 +114,7 @@ const AuthRegister = () => {
                                         name="email"
                                         onBlur={handleBlur}
                                         onChange={handleChange}
-                                        placeholder="demo@company.com"
+                                        placeholder="exemplo@provedor.com"
                                         inputProps={{}}
                                     />
                                     {touched.email && errors.email && (
