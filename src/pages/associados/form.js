@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import * as Yup from 'yup';
+import dayjs from 'dayjs';
 
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
@@ -69,9 +70,7 @@ const formValidationSchema = Yup.object().shape({
     nome: Yup.string().required('Nome é obrigatário'),
     sobrenome: Yup.string().required('Sobrenome é obrigatário'),
     cpf: Yup.string().required('CPF é obrigatário').matches(cpfRegex, 'CPF inválido'),
-    // dataNascimento: Yup.date().required(
-    //     'Data de nascimento é obrigatária'
-    // ),
+    dataNascimento: Yup.date().required('Data de nascimento é obrigatária'),
     escolaridade: Yup.string().required('Escolaridade é obrigatária'),
     estado: Yup.string().required('Estado é obrigatário'),
     cidade: Yup.string().required('Cidade é obrigatária'),
@@ -133,7 +132,8 @@ const AssociadoForm = (props) => {
                 ...values,
                 uid: urlParams.id,
                 tipo: 'associado',
-                isRegistryComplete: true
+                isRegistryComplete: true,
+                dataNascimento: dayjs(values.dataNascimento).valueOf()
             };
 
             await setDoc(doc(db, 'users', urlParams.id), userDoc);
@@ -237,17 +237,13 @@ const AssociadoForm = (props) => {
                                         <Grid item xs={12} md={4}>
                                             <DatePicker
                                                 id="dataNascimento"
+                                                name="dataNascimento"
                                                 label="Data de Nascimento"
                                                 onBlur={handleBlur}
-                                                error={Boolean(
-                                                    touched.dataNascimento && errors.dataNascimento
-                                                )}
-                                                format="DD-MM-YYYY"
+                                                value={dayjs(values.dataNascimento)}
+                                                format="DD/MM/YYYY"
                                                 onChange={(value) => {
-                                                    setFieldValue(
-                                                        'dataNascimento',
-                                                        Date.parse(value)
-                                                    );
+                                                    setFieldValue('dataNascimento', dayjs(value));
                                                 }}
                                                 slotProps={{
                                                     textField: {
@@ -255,6 +251,9 @@ const AssociadoForm = (props) => {
                                                             errors.dataNascimento || 'DD/MM/AAAA'
                                                     }
                                                 }}
+                                                error={Boolean(
+                                                    touched.dataNascimento && errors.dataNascimento
+                                                )}
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={4}>
