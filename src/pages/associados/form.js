@@ -19,7 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import * as Yup from 'yup';
 
 import { openDialog } from 'store/reducers/dialog';
@@ -101,11 +101,23 @@ const AssociadoForm = (props) => {
     const formConfig = formConfigByAction[formAction];
 
     useEffect(() => {
-        if (user && user.uid === urlParams.id) {
-            const newValues = { ...initialValues, email: user.email };
-            setInitialValues(newValues);
-        }
-    }, [user, urlParams, formAction, initialValues]);
+        const getUserProfile = async () => {
+            const docRef = doc(db, 'users', urlParams.id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const userProfile = docSnap.data();
+                return setInitialValues(userProfile);
+            }
+
+            if (user.uid === urlParams.id) {
+                const newValues = { ...initialValues, email: user.email };
+                return setInitialValues(newValues);
+            }
+        };
+
+        if (user) getUserProfile();
+    }, [initialValues, urlParams, user]);
 
     const handleGoBackClick = () => {
         navigate(-1);

@@ -91,7 +91,7 @@ const MainRoutes = {
             element: <AssociadosList />
         },
         {
-            path: '/associado/criar',
+            path: '/associado/criar/:id',
             element: <AssociadoForm formAction="add" />
         },
         {
