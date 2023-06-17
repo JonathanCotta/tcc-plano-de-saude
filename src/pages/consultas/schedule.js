@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
     Typography,
     Paper,
@@ -47,6 +48,10 @@ const ScheduleButton = ({ rowId }) => {
             <CheckCircleOutlined />
         </IconButton>
     );
+};
+
+ScheduleButton.propTypes = {
+    rowId: PropTypes.number
 };
 
 const rowsMock = [
@@ -127,6 +132,8 @@ const ConsultaSchedule = () => {
         );
     };
 
+    const handleSearchSubmit = async (values, { setSubmitting }) => {};
+
     return (
         <ConsultaScheduleStyle>
             <Grid container rowSpacing={3}>
@@ -141,7 +148,7 @@ const ConsultaSchedule = () => {
                                 <Formik
                                     initialValues={formikInitialValues}
                                     validationSchema={formikValidationSchema}
-                                    onSubmit={async (values, { setSubmitting }) => {}}
+                                    onSubmit={handleSearchSubmit}
                                 >
                                     {({
                                         errors,

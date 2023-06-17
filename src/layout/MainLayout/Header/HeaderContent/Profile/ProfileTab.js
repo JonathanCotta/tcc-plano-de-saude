@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import { List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
-// assets
 import { EditOutlined, LogoutOutlined } from '@ant-design/icons';
 
-// ==============================|| HEADER PROFILE - PROFILE TAB ||============================== //
-
-const ProfileTab = ({ handleLogout }) => {
+const ProfileTab = ({ handleLogout, userId, userType }) => {
     const theme = useTheme();
+    const navigate = useNavigate();
 
     const [selectedIndex, setSelectedIndex] = useState(0);
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
+
+        if (index === 0) {
+            navigate(`/${userType}/editar/${userId}`);
+        }
     };
 
     return (
@@ -33,9 +34,9 @@ const ProfileTab = ({ handleLogout }) => {
                 <ListItemIcon>
                     <EditOutlined />
                 </ListItemIcon>
-                <ListItemText primary="Edit Profile" />
+                <ListItemText primary="Editar Perfil" />
             </ListItemButton>
-            <ListItemButton selected={selectedIndex === 2} onClick={handleLogout}>
+            <ListItemButton selected={selectedIndex === 1} onClick={handleLogout}>
                 <ListItemIcon>
                     <LogoutOutlined />
                 </ListItemIcon>
@@ -46,6 +47,8 @@ const ProfileTab = ({ handleLogout }) => {
 };
 
 ProfileTab.propTypes = {
+    userId: PropTypes.string,
+    userType: PropTypes.string,
     handleLogout: PropTypes.func
 };
 

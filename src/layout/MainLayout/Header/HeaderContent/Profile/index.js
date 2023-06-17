@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
-
-// material-ui
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import {
     Avatar,
@@ -17,17 +16,15 @@ import {
     Tabs,
     Typography
 } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { useSignOut } from 'react-firebase-hooks/auth';
 
-// project import
 import MainCard from 'components/MainCard';
 import Transitions from 'components/@extended/Transitions';
 import ProfileTab from './ProfileTab';
-
-// assets
-
+import { auth } from 'firebaseApp';
+import { clearUser } from 'store/reducers/user';
 import { UserOutlined } from '@ant-design/icons';
-
-// tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
     return (
         <div
@@ -58,16 +55,25 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 const Profile = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.user);
     const theme = useTheme();
+    const anchorRef = useRef(null);
+    const [signOut] = useSignOut(auth);
+    const [open, setOpen] = useState(false);
 
     const handleLogout = async () => {
-        // logout
+        const result = await signOut();
+
+        if (result) {
+            navigate('/login', { replace: true });
+            dispatch(clearUser());
+        }
     };
 
-    const anchorRef = useRef(null);
-    const [open, setOpen] = useState(false);
     const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
+        setOpen(() => !open);
     };
 
     const handleClose = (event) => {
@@ -102,7 +108,7 @@ const Profile = () => {
             >
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
                     <Avatar alt="profile user" sx={{ width: 32, height: 32 }} />
-                    <Typography variant="subtitle1">John Doe</Typography>
+                    <Typography variant="subtitle1">{user.profile.nome}</Typography>
                 </Stack>
             </ButtonBase>
             <Popper
@@ -153,13 +159,13 @@ const Profile = () => {
                                                     >
                                                         <Stack>
                                                             <Typography variant="h6">
-                                                                John Doe
+                                                                {`${user.profile.nome} ${user.profile.sobrenome}`}
                                                             </Typography>
                                                             <Typography
                                                                 variant="body2"
                                                                 color="textSecondary"
                                                             >
-                                                                Exemplo Role
+                                                                {user.profile.tipo}
                                                             </Typography>
                                                         </Stack>
                                                     </Stack>
@@ -175,7 +181,7 @@ const Profile = () => {
                                                         variant="fullWidth"
                                                         value={value}
                                                         onChange={handleChange}
-                                                        aria-label="profile tabs"
+                                                        aria-label="abas de perfil"
                                                     >
                                                         <Tab
                                                             sx={{
@@ -193,7 +199,7 @@ const Profile = () => {
                                                                     }}
                                                                 />
                                                             }
-                                                            label="Profile"
+                                                            label="Perfil"
                                                             {...a11yProps(0)}
                                                         />
                                                     </Tabs>
@@ -203,7 +209,11 @@ const Profile = () => {
                                                     index={0}
                                                     dir={theme.direction}
                                                 >
-                                                    <ProfileTab handleLogout={handleLogout} />
+                                                    <ProfileTab
+                                                        handleLogout={handleLogout}
+                                                        userId={user.profile.uid}
+                                                        userType={user.profile.tipo}
+                                                    />
                                                 </TabPanel>
                                             </>
                                         )}

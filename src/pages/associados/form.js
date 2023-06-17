@@ -127,7 +127,7 @@ const AssociadoForm = (props) => {
             await setDoc(doc(db, 'users', urlParams.id), userDoc);
 
             setStatus({ success: true });
-            setUser(userDoc);
+            dispatch(setUser(userDoc));
             setSubmitting(true);
             navigate('/');
         } catch (err) {

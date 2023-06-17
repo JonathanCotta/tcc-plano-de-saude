@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import {
@@ -15,16 +15,18 @@ import {
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { doc, getDoc } from 'firebase/firestore';
-import { setUser } from 'store/reducers/user';
+import { useDispatch } from 'react-redux';
 
+import { setUser } from 'store/reducers/user';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { auth, db } from 'firebaseApp';
 
 const AuthLogin = () => {
     const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = React.useState(false);
+    const dispatch = useDispatch();
 
     const formInitalValues = {
         email: '',
@@ -45,8 +47,9 @@ const AuthLogin = () => {
                 const docRef = doc(db, 'users', response.user.uid);
                 const docSnap = await getDoc(docRef);
                 const userData = docSnap.data();
+
                 if (userData) {
-                    setUser(userData);
+                    dispatch(setUser(userData));
                     setStatus({ success: true });
                     setSubmitting(true);
                     return navigate('/');
