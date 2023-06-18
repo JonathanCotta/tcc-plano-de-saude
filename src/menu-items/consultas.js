@@ -14,6 +14,7 @@ const consultas = {
     id: 'consulta',
     title: 'Consultas',
     type: 'group',
+    allowedUsers: ['admin', 'profissional', 'associado'],
     children: [
         {
             id: 'addConsulta',
@@ -21,7 +22,8 @@ const consultas = {
             type: 'item',
             url: '/consultas/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional']
         },
         {
             id: 'listConsultas',
@@ -29,7 +31,8 @@ const consultas = {
             type: 'item',
             url: '/consultas',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional', 'associado']
         },
         {
             id: 'listConveniados',
@@ -37,7 +40,8 @@ const consultas = {
             type: 'item',
             url: '/consultas/agendar',
             icon: icons.ScheduleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional', 'associado']
         }
     ]
 };

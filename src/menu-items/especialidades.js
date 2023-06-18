@@ -13,6 +13,7 @@ const especialidades = {
     id: 'especialidade',
     title: 'Especialidades',
     type: 'group',
+    allowedUsers: ['admin', 'profissional'],
     children: [
         {
             id: 'addEspecialidade',
@@ -20,7 +21,8 @@ const especialidades = {
             type: 'item',
             url: '/especialidade/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional']
         },
         {
             id: 'listEspecialidades',
@@ -28,7 +30,8 @@ const especialidades = {
             type: 'item',
             url: '/especialidades',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional']
         }
     ]
 };

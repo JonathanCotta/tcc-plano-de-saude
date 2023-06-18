@@ -13,6 +13,7 @@ const conveniados = {
     id: 'conveniado',
     title: 'Conveniados',
     type: 'group',
+    allowedUsers: ['admin'],
     children: [
         {
             id: 'addConveniado',
@@ -20,7 +21,8 @@ const conveniados = {
             type: 'item',
             url: '/conveniado/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         },
         {
             id: 'listConveniados',
@@ -28,7 +30,8 @@ const conveniados = {
             type: 'item',
             url: '/conveniados',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         }
     ]
 };

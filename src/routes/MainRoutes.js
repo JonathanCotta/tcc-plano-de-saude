@@ -30,91 +30,130 @@ const ConsultasSchedule = Loadable(lazy(() => import('pages/consultas/schedule')
 
 // ==============================|| MAIN ROUTING ||============================== //
 
+const childrenRoutes = [
+    {
+        path: '/',
+        element: <DashboardDefault />
+    },
+    {
+        path: '/especialidades',
+        element: <EspecialidadesList />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/especialidade/criar',
+        element: <EspecialidadeForm formAction="add" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/especialidade/editar/:id',
+        element: <EspecialidadeForm formAction="edit" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/planos',
+        element: <PlanosList />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/plano/criar',
+        element: <PlanoForm formAction="add" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/plano/editar/:id',
+        element: <PlanoForm formAction="edit" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/conveniados',
+        element: <ConveniadosList />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/conveniado/criar',
+        element: <ConveniadoForm formAction="add" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/conveniado/editar/:id',
+        element: <ConveniadoForm formAction="edit" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/profissionais',
+        element: <ProfissionaisList />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/profissional/criar',
+        element: <ProfissionalForm formAction="add" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/profissional/editar/:id',
+        element: <ProfissionalForm formAction="edit" />,
+        allowedUsers: ['admin']
+    },
+    {
+        path: '/associados',
+        element: <AssociadosList />,
+        allowedUsers: ['admin', 'associado']
+    },
+    {
+        path: '/associado/criar/:id',
+        element: <AssociadoForm formAction="add" />,
+        allowedUsers: ['admin', 'associado']
+    },
+    {
+        path: '/associado/editar/:id',
+        element: <AssociadoForm formAction="edit" />,
+        allowedUsers: ['admin', 'associado']
+    },
+    {
+        path: '/consultas',
+        element: <ConsultasList />
+    },
+    {
+        path: '/consultas/criar/:id',
+        element: <ConsultaForm formAction="add" />,
+        allowedUsers: ['admin', 'profissional']
+    },
+    {
+        path: '/consultas/editar/:id',
+        element: <ConsultaForm formAction="edit" />,
+        allowedUsers: ['admin', 'profissional']
+    },
+    {
+        path: '/consultas/agendar',
+        element: <ConsultasSchedule />,
+        allowedUsers: ['admin', 'associado']
+    }
+];
+
 const MainRoutes = {
     path: '/',
     element: <MainLayout />,
-    children: [
-        {
-            path: '/',
-            element: <DashboardDefault />
-        },
-        {
-            path: '/especialidades',
-            element: <EspecialidadesList />
-        },
-        {
-            path: '/especialidade/criar',
-            element: <EspecialidadeForm formAction="add" />
-        },
-        {
-            path: '/especialidade/editar/:id',
-            element: <EspecialidadeForm formAction="edit" />
-        },
-        {
-            path: '/planos',
-            element: <PlanosList />
-        },
-        {
-            path: '/plano/criar',
-            element: <PlanoForm formAction="add" />
-        },
-        {
-            path: '/plano/editar/:id',
-            element: <PlanoForm formAction="edit" />
-        },
-        {
-            path: '/conveniados',
-            element: <ConveniadosList />
-        },
-        {
-            path: '/conveniado/criar',
-            element: <ConveniadoForm formAction="add" />
-        },
-        {
-            path: '/conveniado/editar/:id',
-            element: <ConveniadoForm formAction="edit" />
-        },
-        {
-            path: '/profissionais',
-            element: <ProfissionaisList />
-        },
-        {
-            path: '/profissional/criar',
-            element: <ProfissionalForm formAction="add" />
-        },
-        {
-            path: '/profissional/editar/:id',
-            element: <ProfissionalForm formAction="edit" />
-        },
-        {
-            path: '/associados',
-            element: <AssociadosList />
-        },
-        {
-            path: '/associado/criar/:id',
-            element: <AssociadoForm formAction="add" />
-        },
-        {
-            path: '/associado/editar/:id',
-            element: <AssociadoForm formAction="edit" />
-        },
-        {
-            path: '/consultas',
-            element: <ConsultasList />
-        },
-        {
-            path: '/consultas/criar/:id',
-            element: <ConsultaForm formAction="add" />
-        },
-        {
-            path: '/consultas/editar/:id',
-            element: <ConsultaForm formAction="edit" />
-        },
-        {
-            path: '/consultas/agendar',
-            element: <ConsultasSchedule />
-        }
-    ]
+    children: []
 };
 
-export default MainRoutes;
+export const getMainRoutes = (user = {}) => {
+    const { profile } = user;
+
+    const filteredRoutesByUserType = childrenRoutes.filter((route) => {
+        if (route.allowedUsers && route.allowedUsers.length > 0) {
+            return route.allowedUsers.includes(profile.tipo);
+        }
+
+        return true;
+    });
+
+    const filteredMainRoutes = { ...MainRoutes, children: filteredRoutesByUserType };
+
+    return filteredMainRoutes;
+};
+
+export default {
+    MainRoutes,
+    getMainRoutes
+};

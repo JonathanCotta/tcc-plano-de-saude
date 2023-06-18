@@ -13,6 +13,7 @@ const profissioanis = {
     id: 'profissional',
     title: 'Profissionais',
     type: 'group',
+    allowedUsers: ['admin', 'profissional'],
     children: [
         {
             id: 'addProfissional',
@@ -20,7 +21,8 @@ const profissioanis = {
             type: 'item',
             url: '/profissional/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         },
         {
             id: 'listProfissionais',
@@ -28,7 +30,8 @@ const profissioanis = {
             type: 'item',
             url: '/profissionais',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin', 'profissional']
         }
     ]
 };

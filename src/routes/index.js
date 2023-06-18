@@ -1,11 +1,21 @@
+import React from 'react';
 import { useRoutes } from 'react-router-dom';
 
 // project import
 import LoginRoutes from './LoginRoutes';
-import MainRoutes from './MainRoutes';
+import { getMainRoutes } from './MainRoutes';
+import { useSelector } from 'react-redux';
 
 // ==============================|| ROUTING RENDER ||============================== //
 
-export default function ThemeRoutes() {
-    return useRoutes([MainRoutes, LoginRoutes]);
-}
+export const ThemeRoutes = () => {
+    const userData = useSelector((state) => state.user);
+
+    const MainRoutes = getMainRoutes(userData);
+
+    const routesElement = useRoutes([MainRoutes, LoginRoutes]);
+
+    return routesElement;
+};
+
+export default ThemeRoutes;

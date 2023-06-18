@@ -13,6 +13,7 @@ const associados = {
     id: 'associados',
     title: 'Associados',
     type: 'group',
+    allowedUsers: ['admin'],
     children: [
         {
             id: 'addAssociado',
@@ -20,7 +21,8 @@ const associados = {
             type: 'item',
             url: '/associado/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         },
         {
             id: 'listAssociados',
@@ -28,7 +30,8 @@ const associados = {
             type: 'item',
             url: '/associados',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         }
     ]
 };

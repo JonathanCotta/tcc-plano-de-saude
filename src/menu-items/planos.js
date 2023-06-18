@@ -13,6 +13,7 @@ const planos = {
     id: 'plano',
     title: 'Planos',
     type: 'group',
+    allowedUsers: ['admin'],
     children: [
         {
             id: 'addPlano',
@@ -20,7 +21,8 @@ const planos = {
             type: 'item',
             url: '/plano/criar',
             icon: icons.PlusCircleOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         },
         {
             id: 'listPlanos',
@@ -28,7 +30,8 @@ const planos = {
             type: 'item',
             url: '/planos',
             icon: icons.UnorderedListOutlined,
-            target: false
+            target: false,
+            allowedUsers: ['admin']
         }
     ]
 };
