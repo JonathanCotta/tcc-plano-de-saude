@@ -181,7 +181,7 @@ const ConsultaSchedule = () => {
                                                             id="estado"
                                                             name="estado"
                                                             onChange={handleChange}
-                                                            handleBlur={handleBlur}
+                                                            onBlur={handleBlur}
                                                             value={values.estado}
                                                         >
                                                             <MenuItem value={'RJ'}>RJ</MenuItem>
@@ -244,7 +244,7 @@ const ConsultaSchedule = () => {
                                                             id="especialidade"
                                                             name="especialidade"
                                                             onChange={handleChange}
-                                                            handleBlur={handleBlur}
+                                                            onBlur={handleBlur}
                                                             value={values.especialidade}
                                                         >
                                                             <MenuItem value={'enfermaria'}>
@@ -269,7 +269,7 @@ const ConsultaSchedule = () => {
                                                     <Button
                                                         variant="contained"
                                                         type="submit"
-                                                        disable={isSubmitting}
+                                                        disabled={isSubmitting}
                                                     >
                                                         Buscar
                                                     </Button>

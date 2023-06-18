@@ -15,9 +15,7 @@ import {
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { doc, getDoc } from 'firebase/firestore';
-import { useDispatch } from 'react-redux';
 
-import { setUser } from 'store/reducers/user';
 import AnimateButton from 'components/@extended/AnimateButton';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { auth, db } from 'firebaseApp';
@@ -26,7 +24,6 @@ const AuthLogin = () => {
     const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const formInitalValues = {
         email: '',
@@ -49,7 +46,6 @@ const AuthLogin = () => {
                 const userData = docSnap.data();
 
                 if (userData) {
-                    dispatch(setUser(userData));
                     setStatus({ success: true });
                     setSubmitting(true);
                     return navigate('/');
