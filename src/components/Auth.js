@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { doc, getDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { setUser } from 'store/reducers/user';
@@ -11,9 +11,12 @@ import { auth, db } from 'firebaseApp';
 export const Auth = ({ children }) => {
     const userLocal = useSelector((state) => state.user);
     const [user, authLoading] = useAuthState(auth);
+    const { pathname } = useLocation();
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const exceptionUrl = useMemo(() => ['/login', '/register'], []);
 
     const checkLocalUser = (userArg) => {
         const { isLogged, profile } = userArg;
@@ -40,10 +43,14 @@ export const Auth = ({ children }) => {
     );
 
     useEffect(() => {
-        if ((!user && !authLoading) || !checkLocalUser(userLocal)) navigate('/login');
+        if (!exceptionUrl.includes(pathname)) {
+            if (!user && !authLoading) navigate('/login');
 
-        if (user && !checkLocalUser(userLocal)) getUserData(user.uid);
-    }, [getUserData, authLoading, navigate, user, userLocal]);
+            const isAssociadoEdit = /\/associado\/editar\//.test(pathname);
+
+            if (user && !checkLocalUser(userLocal) && !isAssociadoEdit) getUserData(user.uid);
+        }
+    }, [getUserData, authLoading, navigate, user, userLocal, exceptionUrl, pathname]);
 
     return <>{children}</>;
 };
