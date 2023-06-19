@@ -9,10 +9,10 @@ import {
     DialogTitle
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { doc, updatedDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 
 import { closeDialog } from '../store/reducers/consultaDialog';
-import { SCHEDULE_REGISTER_ACTION, SCHEDULE_CANCEL_ACTION } from 'utils/CONSTANTS';
+import CONSTANTS from 'utils/CONSTANTS';
 
 export default function ConsultaDialog() {
     const { open, message, action, consultaId } = useSelector((state) => state.consultaDialog);
@@ -23,7 +23,7 @@ export default function ConsultaDialog() {
         try {
             const docRef = doc(db, 'consultas', id);
 
-            await updatedDoc(docRef, fields);
+            await updateDoc(docRef, fields);
 
             console.log('Document successfully updated!');
         } catch (err) {
@@ -40,7 +40,7 @@ export default function ConsultaDialog() {
     const handleConfirm = async () => {
         let consultaFields = {};
 
-        if (action === SCHEDULE_REGISTER_ACTION) {
+        if (action === CONSTANTS.SCHEDULE_REGISTER_ACTION) {
             const { nome, sobrenome, celular, email, cpf, plano, uid, codigoCliente } = profile;
             const associado = {
                 nome,
@@ -61,7 +61,7 @@ export default function ConsultaDialog() {
             await consultaUpdate(consultaId, consultaFields);
         }
 
-        if (action === SCHEDULE_CANCEL_ACTION) {
+        if (action === CONSTANTS.SCHEDULE_CANCEL_ACTION) {
             consultaFields = {
                 disponivel: false,
                 associado: {}
