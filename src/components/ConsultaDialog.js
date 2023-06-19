@@ -9,20 +9,66 @@ import {
     DialogTitle
 } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import { doc, updatedDoc } from 'firebase/firestore';
 
 import { closeDialog } from '../store/reducers/consultaDialog';
+import { SCHEDULE_REGISTER_ACTION, SCHEDULE_CANCEL_ACTION } from 'utils/CONSTANTS';
 
 export default function ConsultaDialog() {
     const { open, message, action, consultaId } = useSelector((state) => state.consultaDialog);
-
+    const { profile } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+
+    const consultaUpdate = async (id, fields = {}) => {
+        try {
+            const docRef = doc(db, 'consultas', id);
+
+            await updatedDoc(docRef, fields);
+
+            console.log('Document successfully updated!');
+        } catch (err) {
+            console.log(err);
+        } finally {
+            dispatch(closeDialog());
+        }
+    };
 
     const handleClose = () => {
         dispatch(closeDialog());
     };
 
-    const handleConfirm = () => {
-        console.log(action, consultaId);
+    const handleConfirm = async () => {
+        let consultaFields = {};
+
+        if (action === SCHEDULE_REGISTER_ACTION) {
+            const { nome, sobrenome, celular, email, cpf, plano, uid, codigoCliente } = profile;
+            const associado = {
+                nome,
+                sobrenome,
+                celular,
+                email,
+                cpf,
+                plano,
+                uid,
+                codigoCliente
+            };
+
+            consultaFields = {
+                disponivel: false,
+                associado
+            };
+
+            await consultaUpdate(consultaId, consultaFields);
+        }
+
+        if (action === SCHEDULE_CANCEL_ACTION) {
+            consultaFields = {
+                disponivel: false,
+                associado: {}
+            };
+
+            await consultaUpdate(consultaId, consultaFields);
+        }
     };
 
     return (

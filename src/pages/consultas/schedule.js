@@ -142,7 +142,7 @@ const ConsultaSchedule = () => {
                 where('cidade', '==', cidade),
                 where('especialidade', '==', especialidade),
                 where('disponivel', '==', true),
-                where('planos', 'array-contains', plano)
+                where('planos', 'array-contains', plano.id)
             );
 
             const queryResult = await getDocs(consultasQuery);
