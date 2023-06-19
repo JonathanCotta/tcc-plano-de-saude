@@ -24,11 +24,13 @@ import {
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { query, where, collection, getDocs } from 'firebase/firestore';
 
 import ConsultaDialog from 'components/ConsultaDialog';
 import { openDialog } from 'store/reducers/consultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
+import { db } from 'firebaseApp';
 
 const ScheduleButton = ({ rowId }) => {
     const dispatch = useDispatch();
@@ -51,19 +53,8 @@ const ScheduleButton = ({ rowId }) => {
 };
 
 ScheduleButton.propTypes = {
-    rowId: PropTypes.number
+    rowId: PropTypes.string
 };
-
-const rowsMock = [
-    {
-        id: 1,
-        data: '01/01/2021',
-        conveniado: 'João',
-        bairro: 'Bairro',
-        bairro: 'Rua',
-        profissional: '123'
-    }
-];
 
 const columns = [
     {
@@ -119,8 +110,9 @@ const formikValidationSchema = Yup.object().shape({
 
 const ConsultaSchedule = () => {
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
 
-    const [rows, setRows] = useState(rowsMock);
+    const [rows, setRows] = useState([]);
 
     const handleRowClick = ({ id }) => {
         dispatch(
@@ -132,7 +124,38 @@ const ConsultaSchedule = () => {
         );
     };
 
-    const handleSearchSubmit = async (values, { setSubmitting }) => {};
+    const handleSearchSubmit = async (values, { setSubmitting }) => {
+        try {
+            const { estado, cidade, especialidade } = values;
+            const {
+                profile: { plano }
+            } = user;
+
+            let docs = [];
+
+            setSubmitting(true);
+
+            const consultasRef = collection(db, 'consultas');
+            const consultasQuery = query(
+                consultasRef,
+                where('estado', '==', estado),
+                where('cidade', '==', cidade),
+                where('especialidade', '==', especialidade),
+                where('disponivel', '==', true),
+                where('planos', 'array-contains', plano)
+            );
+
+            const queryResult = await getDocs(consultasQuery);
+
+            queryResult.forEach((doc) => {
+                docs.push(doc.data());
+            });
+
+            setRows(docs);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <ConsultaScheduleStyle>
@@ -247,13 +270,13 @@ const ConsultaSchedule = () => {
                                                             onBlur={handleBlur}
                                                             value={values.especialidade}
                                                         >
-                                                            <MenuItem value={'enfermaria'}>
+                                                            <MenuItem value={'Otorrino'}>
                                                                 Otorrino
                                                             </MenuItem>
-                                                            <MenuItem value={'quartoCompartilhado'}>
+                                                            <MenuItem value={'Pediatra'}>
                                                                 Pediatra
                                                             </MenuItem>
-                                                            <MenuItem value={'quartoIndividual'}>
+                                                            <MenuItem value={'Clínico Geral'}>
                                                                 Clinico Geral
                                                             </MenuItem>
                                                         </Select>

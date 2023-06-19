@@ -548,8 +548,12 @@ const AssociadoForm = (props) => {
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                 >
-                                                    <MenuItem value={'blue'}>Blue</MenuItem>
-                                                    <MenuItem value={'green'}>Green</MenuItem>
+                                                    <MenuItem value={'cNPoKdIOQqi0RSBWz2BU'}>
+                                                        Blue
+                                                    </MenuItem>
+                                                    <MenuItem value={'8BJA4Mz5yO84TKRR5ftk'}>
+                                                        Green
+                                                    </MenuItem>
                                                 </Select>
                                                 <FormHelperText>
                                                     {errors.plano && touched.plano
