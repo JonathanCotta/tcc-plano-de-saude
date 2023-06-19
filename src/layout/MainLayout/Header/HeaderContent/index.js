@@ -3,9 +3,7 @@ import React from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 
 // project import
-import Search from './Search';
 import Profile from './Profile';
-
 import MobileSection from './MobileSection';
 
 // ==============================|| HEADER - CONTENT ||============================== //
@@ -15,7 +13,7 @@ const HeaderContent = () => {
 
     return (
         <>
-            {!matchesXs && <Search />}
+            {!matchesXs && <Box sx={{ width: '100%', ml: { xs: 0, md: 1 } }} />}
             {matchesXs && <Box sx={{ width: '100%', ml: 1 }} />}
             {!matchesXs && <Profile />}
             {matchesXs && <MobileSection />}
