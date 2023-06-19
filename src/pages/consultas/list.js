@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Typography, Paper, Divider, Grid, styled, IconButton } from '@mui/material';
 import {
     DataGrid,
@@ -7,23 +8,14 @@ import {
     GridToolbarQuickFilter,
     ptBR
 } from '@mui/x-data-grid';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { CloseCircleFilled } from '@ant-design/icons';
 
+import { db } from 'firebaseApp';
 import { openDialog } from 'store/reducers/consultaDialog';
 import ConsultaDialog from 'components/ConsultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
-
-const rowsMock = [
-    {
-        id: 1,
-        data: '01/01/2021',
-        conveniado: 'João',
-        bairro: 'Bairro',
-        logradouro: 'Rua',
-        numeroEndereco: '123'
-    }
-];
 
 const CancelButton = ({ rowId }) => {
     const dispatch = useDispatch();
@@ -43,6 +35,10 @@ const CancelButton = ({ rowId }) => {
             <CloseCircleFilled />
         </IconButton>
     );
+};
+
+CancelButton.propTypes = {
+    rowId: PropTypes.string
 };
 
 const columns = [
@@ -93,11 +89,35 @@ function CustomToolbar() {
 
 // eslint-disable-next-line no-unused-vars
 const ConsultaList = (_props) => {
-    const [rows, setRows] = useState(rowsMock);
-
+    const { profile } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const [rows, setRows] = useState([]);
 
-    useEffect(() => {}, []);
+    const getUserConsultas = useCallback(async () => {
+        try {
+            const { uid } = profile;
+
+            let consultaDocs = [];
+
+            const consultasRef = collection(db, 'consultas');
+            const consultasQuery = query(consultasRef, where('associado.uid', '==', uid));
+            const queryResult = await getDocs(consultasQuery);
+
+            queryResult.forEach((doc) => {
+                consultaDocs.push(doc.data());
+            });
+
+            setRows(consultaDocs);
+        } catch (err) {
+            console.log(err);
+        }
+    }, [profile]);
+
+    useEffect(() => {
+        if (profile.uid) {
+            getUserConsultas();
+        }
+    }, [getUserConsultas, profile]);
 
     const handleRowDoubleClick = ({ id }) => {
         dispatch(
