@@ -115,7 +115,7 @@ const childrenRoutes = [
         element: <ConsultasList />
     },
     {
-        path: '/consultas/criar/:id',
+        path: '/consultas/criar',
         element: <ConsultaForm formAction="add" />,
         allowedUsers: ['admin', 'profissional']
     },
