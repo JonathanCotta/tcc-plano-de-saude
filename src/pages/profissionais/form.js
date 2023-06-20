@@ -14,7 +14,8 @@ import {
     Select,
     MenuItem,
     Chip,
-    OutlinedInput
+    OutlinedInput,
+    FormHelperText
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch } from 'react-redux';
@@ -166,7 +167,14 @@ const ProfissionalForm = (props) => {
                                     });
                             }}
                         >
-                            {({ errors, handleChange, handleSubmit, values }) => (
+                            {({
+                                errors,
+                                handleChange,
+                                handleSubmit,
+                                values,
+                                touched,
+                                isSubmitting
+                            }) => (
                                 <form onSubmit={handleSubmit} noValidate>
                                     <Grid container rowSpacing={4} columnSpacing={6}>
                                         <Grid item xs={12} style={{ marginTop: 20 }}>
@@ -179,7 +187,7 @@ const ProfissionalForm = (props) => {
                                                     id="nome"
                                                     label="Nome"
                                                     name="nome"
-                                                    error={!!errors.nome}
+                                                    error={Boolean(touched.nome && errors.nome)}
                                                     helperText={errors.nome || ''}
                                                     onChange={handleChange}
                                                     type="text"
@@ -195,7 +203,9 @@ const ProfissionalForm = (props) => {
                                                     id="sobrenome"
                                                     name="sobrenome"
                                                     label="Sobrenome"
-                                                    error={!!errors.sobrenome}
+                                                    error={Boolean(
+                                                        touched.sobrenome && errors.sobrenome
+                                                    )}
                                                     helperText={errors.sobrenome || ''}
                                                     type="text"
                                                     variant="standard"
@@ -211,7 +221,7 @@ const ProfissionalForm = (props) => {
                                                     id="cpf"
                                                     name="cpf"
                                                     label="CPF"
-                                                    error={!!errors.cpf}
+                                                    error={Boolean(touched.cpf && errors.cpf)}
                                                     helperText={errors.cpf || '000.000.000-00'}
                                                     type="text"
                                                     variant="standard"
@@ -231,14 +241,22 @@ const ProfissionalForm = (props) => {
                                                     labelId="tipo-select-label"
                                                     id="tipoIdentificacao"
                                                     name="tipoIdentificacao"
-                                                    error={!!errors.tipoIdentificacao}
-                                                    helperText={errors.tipoIdentificacao || ''}
+                                                    error={Boolean(
+                                                        touched.tipoIdentificacao &&
+                                                            errors.tipoIdentificacao
+                                                    )}
                                                     value={values.tipoIdentificacao}
                                                     onChange={handleChange}
                                                 >
                                                     <MenuItem value={'CRM'}>CRM</MenuItem>
                                                     <MenuItem value={'UID'}>UID</MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.tipoIdentificacao &&
+                                                    touched.tipoIdentificacao
+                                                        ? errors.tipoIdentificacao
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={4}>
@@ -248,7 +266,10 @@ const ProfissionalForm = (props) => {
                                                     name="identificacaoProfissional"
                                                     label="Identificação Profissional"
                                                     type="text"
-                                                    error={!!errors.identificacaoProfissional}
+                                                    error={Boolean(
+                                                        touched.identificacaoProfissional &&
+                                                            errors.identificacaoProfissional
+                                                    )}
                                                     helperText={
                                                         errors.identificacaoProfissional || ''
                                                     }
@@ -268,16 +289,24 @@ const ProfissionalForm = (props) => {
                                                     labelId="tipo-profissional-select-label"
                                                     id="tipoProfissional"
                                                     name="tipoProfissional"
-                                                    error={!!errors.tipoProfissional}
-                                                    helperText={errors.tipoProfissional || ''}
+                                                    error={Boolean(
+                                                        touched.tipoProfissional &&
+                                                            errors.tipoProfissional
+                                                    )}
                                                     value={values.tipoProfissional}
                                                     onChange={handleChange}
                                                 >
                                                     <MenuItem value={'Médico'}>Médico</MenuItem>
                                                     <MenuItem value={'Terapeuta'}>
-                                                        Pediatra
+                                                        Terapeuta
                                                     </MenuItem>
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.tipoProfissional &&
+                                                    touched.tipoProfissional
+                                                        ? errors.tipoProfissional
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={6}>
@@ -292,8 +321,10 @@ const ProfissionalForm = (props) => {
                                                     labelId="especialidades-select-label"
                                                     id="especialidades"
                                                     name="especialidades"
-                                                    error={!!errors.especialidades}
-                                                    helperText={errors.especialidades || ''}
+                                                    error={Boolean(
+                                                        touched.especialidades &&
+                                                            errors.especialidades
+                                                    )}
                                                     label="Especialidades"
                                                     multiple
                                                     onChange={handleEspecialidadeSelectChange}
@@ -333,6 +364,11 @@ const ProfissionalForm = (props) => {
                                                         </MenuItem>
                                                     ))}
                                                 </Select>
+                                                <FormHelperText>
+                                                    {errors.especialidade && touched.especialidade
+                                                        ? errors.especialidade
+                                                        : ''}
+                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} style={{ marginTop: 20 }}>
@@ -345,7 +381,9 @@ const ProfissionalForm = (props) => {
                                                     id="celular"
                                                     label="Celular"
                                                     name="celular"
-                                                    error={!!errors.celular}
+                                                    error={Boolean(
+                                                        touched.celular && errors.celular
+                                                    )}
                                                     helperText={errors.celular || ''}
                                                     type="number"
                                                     value={values.celular}
@@ -362,7 +400,7 @@ const ProfissionalForm = (props) => {
                                                     id="email"
                                                     label="E-mail"
                                                     name="email"
-                                                    error={!!errors.email}
+                                                    error={Boolean(touched.email && errors.email)}
                                                     helperText={errors.email || ''}
                                                     value={userEmail}
                                                     onChange={(e) => setUserEmail(e.target.value)}
@@ -384,7 +422,11 @@ const ProfissionalForm = (props) => {
                                         >
                                             <Grid item>
                                                 {formConfig.saveEnabled && (
-                                                    <Button variant="contained" type="submit">
+                                                    <Button
+                                                        variant="contained"
+                                                        disabled={isSubmitting}
+                                                        type="submit"
+                                                    >
                                                         Salvar
                                                     </Button>
                                                 )}
@@ -394,6 +436,7 @@ const ProfissionalForm = (props) => {
                                                     <Button
                                                         variant="contained"
                                                         color="error"
+                                                        disabled={isSubmitting}
                                                         type="submit"
                                                         onClick={handleRemoveClick}
                                                     >

@@ -28,7 +28,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { query, where, collection, getDocs, doc, writeBatch } from 'firebase/firestore';
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
@@ -137,15 +137,7 @@ const ConsultasForm = () => {
 
     const tempoConsultaOptions = [15, 30, 60];
 
-    const handleRowClick = ({ id }) => {
-        dispatch(
-            openDialog({
-                message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
-                action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
-                consultaId: id
-            })
-        );
-    };
+    const handleRowClick = ({ id }) => {};
 
     const searchConveniados = useMemo(() => {
         return debounce(async () => {
@@ -163,13 +155,14 @@ const ConsultasForm = () => {
                 const queryResult = await getDocs(conveniadosQuery);
 
                 queryResult.forEach((doc) => {
-                    conveniados.push(doc.dataConsulta());
+                    conveniados.push(doc.data());
                 });
 
                 setConveniadoOptions(conveniados);
-                setConveniadoLoading(false);
             } catch (err) {
                 console.error(err);
+            } finally {
+                setConveniadoLoading(false);
             }
         }, 300);
     }, [conveniadoInputValue]);
@@ -190,13 +183,14 @@ const ConsultasForm = () => {
                 const queryResult = await getDocs(profissionaisQuery);
 
                 queryResult.forEach((doc) => {
-                    professionais.push(doc.dataConsulta());
+                    professionais.push(doc.data());
                 });
 
                 setProfissionalOptions(professionais);
-                setProfissionalLoading(false);
             } catch (err) {
                 console.error(err);
+            } finally {
+                setProfissionalLoading(false);
             }
         }, 300);
     }, [profissionalInputValue]);
@@ -221,8 +215,19 @@ const ConsultasForm = () => {
     const handleSave = async () => {
         try {
             setIsSaving(true);
+
+            const batch = writeBatch(db);
+
+            rows.forEach((row) => {
+                const consultasRef = doc(db, 'consultas');
+                batch.set(consultasRef, row);
+            });
+
+            batch.commit();
         } catch (err) {
             console.error(err);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -496,7 +501,7 @@ const ConsultasForm = () => {
                                                             onBlur={handleBlur}
                                                             value={values.horaConsulta}
                                                         >
-                                                            {getHoursOptions(values.intervalo)}
+                                                            {getHoursOptions(values.tempoConsulta)}
                                                         </Select>
                                                         <FormHelperText>
                                                             {errors.horaConsulta &&
