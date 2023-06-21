@@ -64,10 +64,10 @@ const columns = [
         minWidth: 80,
         renderCell: (params) => <ScheduleButton rowId={params.id} />
     },
-    { field: 'data', type: 'date', headerName: 'Data', minWidth: 150 },
-    { field: 'conveniado', headerName: 'Conveniado', minWidth: 250 },
-    { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
-    { field: 'profissional', headerName: 'Profissional', minWidth: 250 }
+    { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 150 },
+    { field: 'conveniado.nome', headerName: 'Conveniado', minWidth: 250 },
+    { field: 'conveniado.bairro', headerName: 'Bairro', minWidth: 200 },
+    { field: 'profissional.nome', headerName: 'Profissional', minWidth: 250 }
 ];
 
 const ConsultaScheduleStyle = styled('div')(() => ({

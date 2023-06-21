@@ -26,54 +26,32 @@ import {
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
 import { query, where, collection, getDocs, doc, writeBatch } from 'firebase/firestore';
-import { debounce, set } from 'lodash';
+import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
 import ConsultaDialog from 'components/ConsultaDialog';
-import { openDialog } from 'store/reducers/consultaDialog';
-import CONSTANTS from 'utils/CONSTANTS';
 import { db } from 'firebaseApp';
 
-const ScheduleButton = ({ rowId }) => {
-    const dispatch = useDispatch();
-
+const RemoveButton = ({ rowId, rows, setRows }) => {
     const handleClick = () => {
-        dispatch(
-            openDialog({
-                action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
-                message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
-                consultaId: rowId
-            })
-        );
+        const newRow = rows.filter((row) => row.id !== rowId);
+        setRows(newRow);
     };
 
     return (
-        <IconButton color="success" onClick={handleClick}>
+        <IconButton color="error" onClick={handleClick}>
             <CheckCircleOutlined />
         </IconButton>
     );
 };
 
-ScheduleButton.propTypes = {
-    rowId: PropTypes.string
+RemoveButton.propTypes = {
+    rowId: PropTypes.number,
+    rows: PropTypes.array,
+    setRows: PropTypes.func
 };
-
-const columns = [
-    {
-        field: 'action',
-        sortable: false,
-        headerName: 'Marcar',
-        minWidth: 80,
-        renderCell: (params) => <ScheduleButton rowId={params.id} />
-    },
-    { field: 'data', type: 'date', headerName: 'Data', minWidth: 150 },
-
-    { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
-    { field: 'profissional', headerName: 'Profissional', minWidth: 250 }
-];
 
 const ConsultaScheduleStyle = styled('div')(() => ({
     '.MuiDataGrid-columnHeaders': {
@@ -124,8 +102,6 @@ const formikValidationSchema = Yup.object().shape({
 });
 
 const ConsultasForm = () => {
-    const dispatch = useDispatch();
-
     const [rows, setRows] = useState([]);
     const [conveniadoInputValue, setConveniadoInputValue] = useState('');
     const [conveniadoOptions, setConveniadoOptions] = useState([]);
@@ -135,9 +111,21 @@ const ConsultasForm = () => {
     const [profissionalLoading, setProfissionalLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
-    const tempoConsultaOptions = [15, 30, 60];
+    const columns = [
+        {
+            field: 'action',
+            sortable: false,
+            headerName: 'Marcar',
+            minWidth: 80,
+            renderCell: (params) => <RemoveButton rowId={params.id} setRows={setRows} rows={rows} />
+        },
+        { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 150 },
+        { field: 'horaConsulta', type: 'string', headerName: 'Inicio', minWidth: 150 },
+        { field: 'tempoConsulta', type: 'string', headerName: 'Duração', minWidth: 150 },
+        { field: 'especialidade', headerName: 'Especialidade', minWidth: 200 }
+    ];
 
-    const handleRowClick = ({ id }) => {};
+    const tempoConsultaOptions = [15, 30, 60];
 
     const searchConveniados = useMemo(() => {
         return debounce(async () => {
@@ -541,7 +529,6 @@ const ConsultasForm = () => {
                                     rows={rows}
                                     columns={columns}
                                     pageSize={15}
-                                    onRowDoubleClick={handleRowClick}
                                     components={{ Toolbar: CustomToolbar }}
                                     localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
                                     disableColumnSelector
