@@ -25,7 +25,7 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { query, where, collection, getDocs } from 'firebase/firestore';
+import { query, where, collection, onSnapshot } from 'firebase/firestore';
 
 import ConsultaDialog from 'components/ConsultaDialog';
 import { openConsultaDialog } from 'store/reducers/consultaDialog';
@@ -113,7 +113,6 @@ const formikValidationSchema = Yup.object().shape({
 const ConsultaSchedule = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-
     const [rows, setRows] = useState([]);
 
     useEffect(() => {
@@ -146,8 +145,6 @@ const ConsultaSchedule = () => {
             } = user;
 
             if (plano.qtdConsultas > 0) {
-                let docs = [];
-
                 setSubmitting(true);
 
                 const consultasRef = collection(db, 'consultas');
@@ -160,13 +157,15 @@ const ConsultaSchedule = () => {
                     where('planos', 'array-contains', { id: plano.id, nome: plano.nome })
                 );
 
-                const queryResult = await getDocs(consultasQuery);
+                onSnapshot(consultasQuery, (querySnapshot) => {
+                    const docs = [];
 
-                queryResult.forEach((doc) => {
-                    docs.push(doc.data());
+                    querySnapshot.forEach((doc) => {
+                        docs.push(doc.data());
+                    });
+
+                    setRows(docs);
                 });
-
-                setRows(docs);
             } else {
                 dispatch(
                     openDialog({
