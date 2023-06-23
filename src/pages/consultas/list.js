@@ -9,7 +9,7 @@ import {
     ptBR
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { CloseCircleFilled } from '@ant-design/icons';
 
 import { db } from 'firebaseApp';

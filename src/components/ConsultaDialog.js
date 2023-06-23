@@ -54,7 +54,8 @@ export default function ConsultaDialog() {
 
     const handleConfirm = async () => {
         let consultaFields = {};
-        const newProfile = { ...profile };
+        let associadoFields = {};
+        const { plano } = profile;
 
         if (action === CONSTANTS.SCHEDULE_REGISTER_ACTION) {
             const { nome, sobrenome, celular, email, cpf, plano, uid, codigoCliente } = profile;
@@ -74,19 +75,22 @@ export default function ConsultaDialog() {
                 associado
             };
 
-            newProfile.plano.qtdConsultas = newProfile.plano.qtdConsultas - 1;
+            associadoFields = {
+                plano: { ...plano, qtdConsultas: plano.qtdConsultas - 1 }
+            };
         }
 
         if (action === CONSTANTS.SCHEDULE_CANCEL_ACTION) {
             consultaFields = { disponivel: true, associado: {} };
-
-            newProfile.plano.qtdConsultas = newProfile.plano.qtdConsultas + 1;
+            associadoFields = {
+                plano: { ...plano, qtdConsultas: plano.qtdConsultas + 1 }
+            };
         }
 
         await consultaUpdate(consultaId, consultaFields);
-        await associadoUpdate(newProfile.uid, newProfile);
+        await associadoUpdate(profile.uid, associadoFields);
 
-        dispatch(closeDialog());
+        dispatch(closeConsultaDialog());
     };
 
     return (
