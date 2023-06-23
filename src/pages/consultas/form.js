@@ -196,7 +196,40 @@ const ConsultasForm = () => {
     }, [profissionalInputValue, searchProfissionais]);
 
     const handleInsertSubmit = (values, { setSubmitting }) => {
-        setRows([...rows, values]);
+        const {
+            conveniado: {
+                nome: nomeConveniado,
+                numeroEndereco,
+                bairro,
+                cidade,
+                estado,
+                logradouro,
+                planos
+            },
+            profissional: { nome: nomeProfissional },
+            especialidade,
+            tempoConsulta,
+            horaConsulta,
+            dataConsulta
+        } = values;
+
+        const newConsulta = {
+            conveniado: nomeConveniado,
+            numeroEndereco,
+            bairro,
+            cidade,
+            estado,
+            logradouro,
+            profissional: nomeProfissional,
+            especialidade,
+            tempoConsulta,
+            horaConsulta,
+            dataConsulta,
+            disponivel: true,
+            planos
+        };
+
+        setRows([...rows, newConsulta]);
         setSubmitting(true);
     };
 

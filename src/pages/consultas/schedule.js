@@ -66,9 +66,9 @@ const columns = [
     },
     { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 120 },
     { field: 'horaConsulta', type: 'string', headerName: 'Hora', minWidth: 80 },
-    { field: 'conveniado.nome', headerName: 'Conveniado', minWidth: 200 },
-    { field: 'conveniado.bairro', headerName: 'Bairro', minWidth: 200 },
-    { field: 'profissional.nome', headerName: 'Profissional', minWidth: 210 }
+    { field: 'conveniado', headerName: 'Conveniado', minWidth: 200 },
+    { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
+    { field: 'logradouro', headerName: 'Logradouro', minWidth: 180 }
 ];
 
 const ConsultaScheduleStyle = styled('div')(() => ({

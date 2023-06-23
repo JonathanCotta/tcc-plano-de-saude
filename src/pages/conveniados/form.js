@@ -126,7 +126,7 @@ const ConveniadoForm = (props) => {
                                 tipo: '',
                                 estado: '',
                                 cidade: '',
-                                tipoLogradouro: '',
+
                                 logradouro: '',
                                 numeroEndereco: '',
                                 complemento: '',
@@ -142,9 +142,7 @@ const ConveniadoForm = (props) => {
                                 tipo: Yup.string().required('Tipo é obrigatário'),
                                 estado: Yup.string().required('Estado é obrigatário'),
                                 cidade: Yup.string().required('Cidade é obrigatária'),
-                                tipoLogradouro: Yup.string().required(
-                                    'Tipo de logradouro é obrigatário'
-                                ),
+
                                 logradouro: Yup.string().required('Logradouro é obrigatário'),
                                 numeroEndereco: Yup.number().required(
                                     'NÚmero de endereço é obrigatário'
@@ -339,26 +337,6 @@ const ConveniadoForm = (props) => {
                                                     variant="standard"
                                                     disabled={formConfig.fieldsDisable}
                                                 />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth>
-                                                <InputLabel id="tipo-logradouro-select-label">
-                                                    Tipo Logradouro
-                                                </InputLabel>
-                                                <Select
-                                                    labelId="tipo-logradouro-select-label"
-                                                    id="tipoLogradouro"
-                                                    error={!!errors.tipoLogradouro}
-                                                    helperText={errors.tipoLogradouro || ''}
-                                                    name="tipoLogradouro"
-                                                    value={values.tipoLogradouro}
-                                                    onChange={handleChange}
-                                                >
-                                                    <MenuItem value={'avenida'}>Avenida</MenuItem>
-                                                    <MenuItem value={'rua'}>Rua</MenuItem>
-                                                    <MenuItem value={'alameda'}>Alameda</MenuItem>
-                                                </Select>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>

@@ -52,7 +52,7 @@ const formInitalValues = {
     escolaridade: '',
     estado: '',
     cidade: '',
-    tipoLogradouro: '',
+
     logradouro: '',
     numeroEndereco: '',
     complemento: '',
@@ -74,7 +74,7 @@ const formValidationSchema = Yup.object().shape({
     escolaridade: Yup.string().required('Escolaridade é obrigatária'),
     estado: Yup.string().required('Estado é obrigatário'),
     cidade: Yup.string().required('Cidade é obrigatária'),
-    tipoLogradouro: Yup.string().required('Tipo de logradouro é obrigatário'),
+
     logradouro: Yup.string().required('Logradouro é obrigatário'),
     numeroEndereco: Yup.number().required('NÚmero de endereço é obrigatário'),
     complemento: Yup.string().required('Complemento é obrigatário'),
@@ -373,34 +373,6 @@ const AssociadoForm = (props) => {
                                                     variant="standard"
                                                     disabled={formConfig.fieldsDisable}
                                                 />
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth>
-                                                <InputLabel id="tipo-logradouro-select-label">
-                                                    Tipo Logradouro
-                                                </InputLabel>
-                                                <Select
-                                                    labelId="tipo-logradouro-select-label"
-                                                    id="tipoLogradouro"
-                                                    error={Boolean(
-                                                        touched.tipoLogradouro &&
-                                                            errors.tipoLogradouro
-                                                    )}
-                                                    name="tipoLogradouro"
-                                                    value={values.tipoLogradouro}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                >
-                                                    <MenuItem value={'avenida'}>Avenida</MenuItem>
-                                                    <MenuItem value={'rua'}>Rua</MenuItem>
-                                                    <MenuItem value={'alameda'}>Alameda</MenuItem>
-                                                </Select>
-                                                <FormHelperText>
-                                                    {errors.tipoLogradouro && touched.tipoLogradouro
-                                                        ? errors.tipoLogradouro
-                                                        : ''}
-                                                </FormHelperText>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} md={3}>

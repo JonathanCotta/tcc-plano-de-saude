@@ -63,7 +63,7 @@ export default function ConsultaDialog() {
 
         if (action === CONSTANTS.SCHEDULE_CANCEL_ACTION) {
             consultaFields = {
-                disponivel: false,
+                disponivel: true,
                 associado: {}
             };
 
