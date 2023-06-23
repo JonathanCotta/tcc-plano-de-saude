@@ -46,9 +46,7 @@ export const Auth = ({ children }) => {
         if (!exceptionUrl.includes(pathname)) {
             if (!user && !authLoading) navigate('/login');
 
-            const isAssociadoEdit = /\/associado\/editar\//.test(pathname);
-
-            if (user && !checkLocalUser(userLocal) && !isAssociadoEdit) getUserData(user.uid);
+            if (user && !checkLocalUser(userLocal)) getUserData(user.uid);
         }
     }, [getUserData, authLoading, navigate, user, userLocal, exceptionUrl, pathname]);
 

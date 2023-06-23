@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -13,15 +13,17 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    FormHelperText
+    FormHelperText,
+    Autocomplete
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Formik } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, where, collection, query, getDocs } from 'firebase/firestore';
 import * as Yup from 'yup';
 import dayjs from 'dayjs';
+import { debounce } from 'lodash';
 
 import { openDialog } from 'store/reducers/dialog';
 import ConfirmationDialog from 'components/ConfirmationDialog';
@@ -74,7 +76,6 @@ const formValidationSchema = Yup.object().shape({
     escolaridade: Yup.string().required('Escolaridade é obrigatária'),
     estado: Yup.string().required('Estado é obrigatário'),
     cidade: Yup.string().required('Cidade é obrigatária'),
-
     logradouro: Yup.string().required('Logradouro é obrigatário'),
     numeroEndereco: Yup.number().required('NÚmero de endereço é obrigatário'),
     complemento: Yup.string().required('Complemento é obrigatário'),
@@ -83,7 +84,7 @@ const formValidationSchema = Yup.object().shape({
     celular: Yup.number().required('Celular é obrigatário'),
     email: Yup.string().required('E-mail é obrigatário'),
     tipoPlano: Yup.string().required('Tipo de plano é obrigatário'),
-    plano: Yup.string().required('Plano é obrigatário'),
+    plano: Yup.object().required('Plano é obrigatário'),
     codigoCliente: Yup.string().required('Numero da carteira é obrigatário'),
     statusPlano: Yup.string().required('Status do plano é obrigatário')
 });
@@ -96,6 +97,9 @@ const AssociadoForm = (props) => {
     const navigate = useNavigate();
     const [user] = useAuthState(auth);
     const [initialValues, setInitialValues] = useState(formInitalValues);
+    const [planoInputValue, setPlanoInputValue] = useState('');
+    const [planoOptions, setPlanoOptions] = useState([]);
+    const [planoLoading, setPlanoLoading] = useState(false);
 
     const formConfig = formConfigByAction[formAction];
 
@@ -117,6 +121,40 @@ const AssociadoForm = (props) => {
 
         if (user) getUserProfile();
     }, [initialValues, urlParams, user]);
+
+    const searchPlanos = useMemo(() => {
+        return debounce(async () => {
+            try {
+                let planos = [];
+
+                setPlanoLoading(true);
+
+                const planosRef = collection(db, 'planos');
+                const planosQuery = query(
+                    planosRef,
+                    where('nome', '>=', planoInputValue),
+                    where('nome', '<=', planoInputValue + '\uf8ff')
+                );
+                const queryResult = await getDocs(planosQuery);
+
+                queryResult.forEach((doc) => {
+                    planos.push(doc.data());
+                });
+
+                setPlanoOptions(planos);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setPlanoLoading(false);
+            }
+        }, 300);
+    }, [planoInputValue]);
+
+    useEffect(() => {
+        if (planoInputValue !== '') {
+            searchPlanos();
+        }
+    }, [planoInputValue, searchPlanos]);
 
     const handleGoBackClick = () => {
         navigate(-1);
@@ -307,9 +345,9 @@ const AssociadoForm = (props) => {
                                                     labelId="estado-select-label"
                                                     id="estado"
                                                 >
-                                                    <MenuItem value={'rj'}>RJ</MenuItem>
-                                                    <MenuItem value={'sp'}>SP</MenuItem>
-                                                    <MenuItem value={'mg'}>MG</MenuItem>
+                                                    <MenuItem value={'RJ'}>RJ</MenuItem>
+                                                    <MenuItem value={'SP'}>SP</MenuItem>
+                                                    <MenuItem value={'MG'}>MG</MenuItem>
                                                 </Select>
                                                 <FormHelperText>
                                                     {errors.estado && touched.estado
@@ -350,11 +388,11 @@ const AssociadoForm = (props) => {
                                                     onBlur={handleBlur}
                                                     value={values.cidade}
                                                 >
-                                                    <MenuItem value={'niteroi'}>Niteroi</MenuItem>
-                                                    <MenuItem value={'riodejaneiro'}>
+                                                    <MenuItem value={'Niteroi'}>Niteroi</MenuItem>
+                                                    <MenuItem value={'Rio de Janeiro'}>
                                                         Rio de Janeiro
                                                     </MenuItem>
-                                                    <MenuItem value={'itaguai'}>Itaguai</MenuItem>
+                                                    <MenuItem value={'Itaguai'}>Itaguai</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -478,35 +516,40 @@ const AssociadoForm = (props) => {
                                             <Typography variant="h4">Plano</Typography>
                                             <Divider />
                                         </Grid>
-                                        <Grid item xs={12} md={3}>
-                                            <FormControl variant="standard" fullWidth>
-                                                <InputLabel id="tipo-plano-select-label">
-                                                    Tipo do Plano
-                                                </InputLabel>
-                                                <Select
-                                                    labelId="tipo-plano-select-label"
-                                                    id="tipoPlano"
-                                                    name="tipoPlano"
-                                                    error={Boolean(
-                                                        touched.tipoPlano && errors.tipoPlano
+                                        <Grid item xs={4} md={4}>
+                                            <FormControl fullWidth>
+                                                <Autocomplete
+                                                    loading={planoLoading}
+                                                    autoComplete
+                                                    value={values.plano}
+                                                    inputValue={planoInputValue}
+                                                    filterOptions={(x) => x}
+                                                    options={planoOptions}
+                                                    getOptionLabel={(option) => option.nome || ''}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            variant="standard"
+                                                            error={Boolean(
+                                                                touched.plano && errors.plano
+                                                            )}
+                                                            helperText={
+                                                                touched.plano && errors.plano
+                                                            }
+                                                            label="Plano"
+                                                            name="plano"
+                                                        />
                                                     )}
-                                                    value={values.tipoPlano}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                >
-                                                    <MenuItem value={'individual'}>
-                                                        Individual
-                                                    </MenuItem>
-                                                    <MenuItem value={'empresa'}>Empresa</MenuItem>
-                                                </Select>
-                                                <FormHelperText>
-                                                    {errors.tipoPlano && touched.tipoPlano
-                                                        ? errors.tipoPlano
-                                                        : ''}
-                                                </FormHelperText>
+                                                    onChange={(event, value) => {
+                                                        setFieldValue('plano', value);
+                                                    }}
+                                                    onInputChange={(event, value) => {
+                                                        setPlanoInputValue(value);
+                                                    }}
+                                                />
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} md={3}>
+                                        {/* <Grid item xs={12} md={3}>
                                             <FormControl variant="standard" fullWidth>
                                                 <InputLabel id="plano-select-label">
                                                     Plano
@@ -533,7 +576,7 @@ const AssociadoForm = (props) => {
                                                         : ''}
                                                 </FormHelperText>
                                             </FormControl>
-                                        </Grid>
+                                        </Grid> */}
                                         <Grid item xs={12} md={2}>
                                             <FormControl>
                                                 <TextField
