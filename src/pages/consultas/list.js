@@ -9,7 +9,7 @@ import {
     ptBR
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { CloseCircleFilled } from '@ant-design/icons';
 
 import { db } from 'firebaseApp';
@@ -91,33 +91,38 @@ function CustomToolbar() {
 // eslint-disable-next-line no-unused-vars
 const ConsultaList = (_props) => {
     const { profile } = useSelector((state) => state.user);
-    const dispatch = useDispatch();
     const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
 
     const getUserConsultas = useCallback(async () => {
         try {
             const { uid } = profile;
 
-            let consultaDocs = [];
-
             const consultasRef = collection(db, 'consultas');
             const consultasQuery = query(consultasRef, where('associado.uid', '==', uid));
-            const queryResult = await getDocs(consultasQuery);
 
-            queryResult.forEach((doc) => {
-                consultaDocs.push(doc.data());
+            return onSnapshot(consultasQuery, (querySnapshot) => {
+                const consultaDocs = [];
+                querySnapshot.forEach((doc) => {
+                    consultaDocs.push(doc.data());
+                });
+                setRows(consultaDocs);
             });
-
-            setRows(consultaDocs);
         } catch (err) {
-            console.log(err);
+            console.err(err);
         }
     }, [profile]);
 
     useEffect(() => {
+        let unsubscribe;
+
         if (profile.uid) {
-            getUserConsultas();
+            unsubscribe = getUserConsultas();
         }
+
+        return () => {
+            if (typeof unsubscribe === 'function') unsubscribe();
+        };
     }, [getUserConsultas, profile]);
 
     const handleRowDoubleClick = ({ id }) => {
