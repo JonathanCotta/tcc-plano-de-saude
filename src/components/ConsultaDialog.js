@@ -13,10 +13,13 @@ import { doc, updateDoc } from 'firebase/firestore';
 
 import { closeDialog } from '../store/reducers/consultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
+import { db } from 'firebaseApp';
+import { setUser } from 'store/reducers/user';
 
 export default function ConsultaDialog() {
     const { open, message, action, consultaId } = useSelector((state) => state.consultaDialog);
     const { profile } = useSelector((state) => state.user);
+
     const dispatch = useDispatch();
 
     const consultaUpdate = async (id, fields = {}) => {
@@ -28,8 +31,18 @@ export default function ConsultaDialog() {
             console.log('Document successfully updated!');
         } catch (err) {
             console.log(err);
-        } finally {
-            dispatch(closeDialog());
+        }
+    };
+
+    const associadoUpdate = async (id, fields = {}) => {
+        try {
+            const docRef = doc(db, 'users', id);
+
+            await updateDoc(docRef, fields);
+
+            console.log('Document successfully updated!');
+        } catch (err) {
+            console.log(err);
         }
     };
 
@@ -39,6 +52,7 @@ export default function ConsultaDialog() {
 
     const handleConfirm = async () => {
         let consultaFields = {};
+        const newProfile = { ...profile };
 
         if (action === CONSTANTS.SCHEDULE_REGISTER_ACTION) {
             const { nome, sobrenome, celular, email, cpf, plano, uid, codigoCliente } = profile;
@@ -58,17 +72,19 @@ export default function ConsultaDialog() {
                 associado
             };
 
-            await consultaUpdate(consultaId, consultaFields);
+            newProfile.plano.qtdConsultas = newProfile.plano.qtdConsultas - 1;
         }
 
         if (action === CONSTANTS.SCHEDULE_CANCEL_ACTION) {
-            consultaFields = {
-                disponivel: true,
-                associado: {}
-            };
+            consultaFields = { disponivel: true, associado: {} };
 
-            await consultaUpdate(consultaId, consultaFields);
+            newProfile.plano.qtdConsultas = newProfile.plano.qtdConsultas + 1;
         }
+
+        await consultaUpdate(consultaId, consultaFields);
+        await associadoUpdate(newProfile.uid, newProfile);
+
+        dispatch(closeDialog());
     };
 
     return (
