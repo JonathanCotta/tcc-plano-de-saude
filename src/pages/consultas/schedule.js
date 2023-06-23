@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Typography,
@@ -28,7 +28,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { query, where, collection, getDocs } from 'firebase/firestore';
 
 import ConsultaDialog from 'components/ConsultaDialog';
-import { openDialog } from 'store/reducers/consultaDialog';
+import { openConsultaDialog } from 'store/reducers/consultaDialog';
+import ConfirmationDialog from 'components/ConfirmationDialog';
+import { openDialog } from 'store/reducers/dialog';
 import CONSTANTS from 'utils/CONSTANTS';
 import { db } from 'firebaseApp';
 
@@ -37,7 +39,7 @@ const ScheduleButton = ({ rowId }) => {
 
     const handleClick = () => {
         dispatch(
-            openDialog({
+            openConsultaDialog({
                 action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
                 message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
                 consultaId: rowId
@@ -92,7 +94,6 @@ function CustomToolbar() {
                 <Grid item xs={3}>
                     <GridToolbarFilterButton />
                 </Grid>
-
                 <Grid item xs={3}>
                     <GridToolbarQuickFilter />
                 </Grid>
@@ -115,9 +116,21 @@ const ConsultaSchedule = () => {
 
     const [rows, setRows] = useState([]);
 
+    useEffect(() => {
+        const { profile } = user;
+
+        if ((profile.plano && profile.plano.qtdConsultas < 0) || !profile.plano.qtdConsultas) {
+            dispatch(
+                openDialog({
+                    message: CONSTANTS.SOLD_OUT_FRANCHISE
+                })
+            );
+        }
+    }, [dispatch, user]);
+
     const handleRowClick = ({ id }) => {
         dispatch(
-            openDialog({
+            openConsultaDialog({
                 message: CONSTANTS.SCHEDULE_CONFIRM_MESSAGE,
                 action: CONSTANTS.SCHEDULE_REGISTER_ACTION,
                 consultaId: id
@@ -132,27 +145,35 @@ const ConsultaSchedule = () => {
                 profile: { plano }
             } = user;
 
-            let docs = [];
+            if (plano.qtdConsultas > 0) {
+                let docs = [];
 
-            setSubmitting(true);
+                setSubmitting(true);
 
-            const consultasRef = collection(db, 'consultas');
-            const consultasQuery = query(
-                consultasRef,
-                where('estado', '==', estado),
-                where('cidade', '==', cidade),
-                where('especialidade', '==', especialidade),
-                where('disponivel', '==', true),
-                where('planos', 'array-contains', plano.id)
-            );
+                const consultasRef = collection(db, 'consultas');
+                const consultasQuery = query(
+                    consultasRef,
+                    where('estado', '==', estado),
+                    where('cidade', '==', cidade),
+                    where('especialidade', '==', especialidade),
+                    where('disponivel', '==', true),
+                    where('planos', 'array-contains', { id: plano.id, nome: plano.nome })
+                );
 
-            const queryResult = await getDocs(consultasQuery);
+                const queryResult = await getDocs(consultasQuery);
 
-            queryResult.forEach((doc) => {
-                docs.push(doc.data());
-            });
+                queryResult.forEach((doc) => {
+                    docs.push(doc.data());
+                });
 
-            setRows(docs);
+                setRows(docs);
+            } else {
+                dispatch(
+                    openDialog({
+                        message: CONSTANTS.SOLD_OUT_FRANCHISE
+                    })
+                );
+            }
         } catch (err) {
             console.error(err);
         }
@@ -195,7 +216,9 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={touched.estado && errors.estado}
+                                                        error={Boolean(
+                                                            touched.estado && errors.estado
+                                                        )}
                                                     >
                                                         <InputLabel id="estado-select-label">
                                                             Estado
@@ -221,7 +244,9 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={touched.cidade && errors.cidade}
+                                                        error={Boolean(
+                                                            touched.cidade && errors.cidade
+                                                        )}
                                                     >
                                                         <InputLabel id="cidade-select-label">
                                                             Cidade
@@ -255,10 +280,10 @@ const ConsultaSchedule = () => {
                                                     <FormControl
                                                         variant="standard"
                                                         fullWidth
-                                                        error={
+                                                        error={Boolean(
                                                             touched.especialidade &&
-                                                            errors.especialidade
-                                                        }
+                                                                errors.especialidade
+                                                        )}
                                                     >
                                                         <InputLabel id="especialidade-select-label">
                                                             Especialidade
@@ -326,6 +351,7 @@ const ConsultaSchedule = () => {
                 </Grid>
             </Grid>
             <ConsultaDialog />
+            <ConfirmationDialog />
         </ConsultaScheduleStyle>
     );
 };

@@ -11,7 +11,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { doc, updateDoc } from 'firebase/firestore';
 
-import { closeDialog } from '../store/reducers/consultaDialog';
+import { closeConsultaDialog } from '../store/reducers/consultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
 import { db } from 'firebaseApp';
 import { setUser } from 'store/reducers/user';
@@ -40,6 +40,8 @@ export default function ConsultaDialog() {
 
             await updateDoc(docRef, fields);
 
+            dispatch(setUser(fields));
+
             console.log('Document successfully updated!');
         } catch (err) {
             console.log(err);
@@ -47,7 +49,7 @@ export default function ConsultaDialog() {
     };
 
     const handleClose = () => {
-        dispatch(closeDialog());
+        dispatch(closeConsultaDialog());
     };
 
     const handleConfirm = async () => {

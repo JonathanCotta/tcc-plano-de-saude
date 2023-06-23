@@ -13,7 +13,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { CloseCircleFilled } from '@ant-design/icons';
 
 import { db } from 'firebaseApp';
-import { openDialog } from 'store/reducers/consultaDialog';
+import { openConsultaDialog } from 'store/reducers/consultaDialog';
 import ConsultaDialog from 'components/ConsultaDialog';
 import CONSTANTS from 'utils/CONSTANTS';
 
@@ -22,7 +22,7 @@ const CancelButton = ({ rowId }) => {
 
     const handleClick = () => {
         dispatch(
-            openDialog({
+            openConsultaDialog({
                 action: CONSTANTS.SCHEDULE_CANCEL_ACTION,
                 message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE,
                 consultaId: rowId
@@ -122,7 +122,7 @@ const ConsultaList = (_props) => {
 
     const handleRowDoubleClick = ({ id }) => {
         dispatch(
-            openDialog({
+            openConsultaDialog({
                 action: CONSTANTS.SCHEDULE_CANCEL_ACTION,
                 message: CONSTANTS.REMOVAL_CONFIRMATION_MESSAGE,
                 consultaId: id

@@ -29,7 +29,7 @@ export default function ConsultaDialog() {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                <Typography>Confirmação</Typography>
+                <Typography>Alerta</Typography>
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
@@ -37,11 +37,8 @@ export default function ConsultaDialog() {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" onClick={handleClose}>
-                    Sim
-                </Button>
                 <Button variant="outlined" color="error" onClick={handleClose}>
-                    Não
+                    Fechar
                 </Button>
             </DialogActions>
         </Dialog>

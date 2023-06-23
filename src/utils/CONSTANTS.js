@@ -3,7 +3,8 @@ const CONSTANTS = {
     SCHEDULE_CANCEL_CONFIRMATION_MESSAGE: 'Deseja mesmo cancelar este agendamento?',
     SCHEDULE_CONFIRM_MESSAGE: 'Deseja mesmo confirmar este agendamento?',
     SCHEDULE_CANCEL_ACTION: 'cancel',
-    SCHEDULE_REGISTER_ACTION: 'register'
+    SCHEDULE_REGISTER_ACTION: 'register',
+    SOLD_OUT_FRANCHISE: 'Quantidade de consultas do plano esgotadas'
 };
 
 export default CONSTANTS;
