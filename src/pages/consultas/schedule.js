@@ -46,7 +46,7 @@ const ScheduleButton = ({ rowId }) => {
     };
 
     return (
-        <IconButton color="success" onClick={handleClick}>
+        <IconButton color="success" onClick={handleClick} size="big">
             <CheckCircleOutlined />
         </IconButton>
     );
@@ -61,13 +61,14 @@ const columns = [
         field: 'action',
         sortable: false,
         headerName: 'Marcar',
-        minWidth: 80,
+        minWidth: 50,
         renderCell: (params) => <ScheduleButton rowId={params.id} />
     },
-    { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 150 },
-    { field: 'conveniado.nome', headerName: 'Conveniado', minWidth: 250 },
+    { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 120 },
+    { field: 'horaConsulta', type: 'string', headerName: 'Hora', minWidth: 80 },
+    { field: 'conveniado.nome', headerName: 'Conveniado', minWidth: 200 },
     { field: 'conveniado.bairro', headerName: 'Bairro', minWidth: 200 },
-    { field: 'profissional.nome', headerName: 'Profissional', minWidth: 250 }
+    { field: 'profissional.nome', headerName: 'Profissional', minWidth: 210 }
 ];
 
 const ConsultaScheduleStyle = styled('div')(() => ({

@@ -31,7 +31,7 @@ const CancelButton = ({ rowId }) => {
     };
 
     return (
-        <IconButton color="error" onClick={handleClick}>
+        <IconButton color="error" onClick={handleClick} size="big">
             <CloseCircleFilled />
         </IconButton>
     );
@@ -46,14 +46,15 @@ const columns = [
         field: 'action',
         sortable: false,
         headerName: 'Cancelar',
-        minWidth: 80,
+        minWidth: 40,
         renderCell: (params) => <CancelButton rowId={params.id} />
     },
-    { field: 'data', headerName: 'Data', sortable: true, minWidth: 120 },
-    { field: 'conveniado', headerName: 'Conveniado', minWidth: 200 },
-    { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
-    { field: 'logradouro', headerName: 'Logradouro', minWidth: 200 },
-    { field: 'numeroEndereco', headerName: 'Nº', minWidth: 80 }
+    { field: 'dataConsulta', headerName: 'Data', sortable: true, minWidth: 110 },
+    { field: 'horaConsulta', type: 'string', headerName: 'Hora', minWidth: 70 },
+    { field: 'conveniado', headerName: 'Conveniado', minWidth: 190 },
+    { field: 'bairro', headerName: 'Bairro', minWidth: 150 },
+    { field: 'logradouro', headerName: 'Logradouro', minWidth: 170 },
+    { field: 'numeroEndereco', headerName: 'Nº', minWidth: 50 }
 ];
 
 // eslint-disable-next-line no-unused-vars
