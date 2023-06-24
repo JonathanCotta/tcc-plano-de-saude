@@ -43,7 +43,7 @@ const RemoveButton = ({ rowId, rows, setRows }) => {
     };
 
     return (
-        <IconButton color="error" onClick={handleClick}>
+        <IconButton color="error" onClick={handleClick} size="big">
             <CheckCircleOutlined />
         </IconButton>
     );

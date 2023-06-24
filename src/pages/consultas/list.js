@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { CloseCircleFilled } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 import { db } from 'firebaseApp';
 import { openConsultaDialog } from 'store/reducers/consultaDialog';
@@ -49,7 +50,17 @@ const columns = [
         minWidth: 40,
         renderCell: (params) => <CancelButton rowId={params.id} />
     },
-    { field: 'dataConsulta', headerName: 'Data', sortable: true, minWidth: 110 },
+    {
+        field: 'dataConsulta',
+        headerName: 'Data',
+        sortable: true,
+        minWidth: 110,
+        valueFormatter: (params) => {
+            const convertedDate = params.value.toDate();
+
+            return dayjs(convertedDate).format('DD/MM/YYYY');
+        }
+    },
     { field: 'horaConsulta', type: 'string', headerName: 'Hora', minWidth: 70 },
     { field: 'conveniado', headerName: 'Conveniado', minWidth: 190 },
     { field: 'bairro', headerName: 'Bairro', minWidth: 150 },

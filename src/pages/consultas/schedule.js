@@ -26,6 +26,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { query, where, collection, onSnapshot } from 'firebase/firestore';
+import dayjs from 'dayjs';
 
 import ConsultaDialog from 'components/ConsultaDialog';
 import { openConsultaDialog } from 'store/reducers/consultaDialog';
@@ -66,7 +67,17 @@ const columns = [
         minWidth: 50,
         renderCell: (params) => <ScheduleButton rowId={params.id} />
     },
-    { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 120 },
+    {
+        field: 'dataConsulta',
+        type: 'date',
+        headerName: 'Data',
+        minWidth: 120,
+        valueFormatter: (params) => {
+            const convertedDate = params.value.toDate();
+
+            return dayjs(convertedDate).format('DD/MM/YYYY');
+        }
+    },
     { field: 'horaConsulta', type: 'string', headerName: 'Hora', minWidth: 80 },
     { field: 'conveniado', headerName: 'Conveniado', minWidth: 200 },
     { field: 'bairro', headerName: 'Bairro', minWidth: 200 },
