@@ -31,8 +31,10 @@ import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-import ConsultaDialog from 'components/ConsultaDialog';
+import ConfirmationDialog from 'components/ConfirmationDialog';
+import { openDialog } from 'store/reducers/dialog';
 import { db } from 'firebaseApp';
+import { useDispatch } from 'react-redux';
 
 const RemoveButton = ({ rowId, rows, setRows }) => {
     const handleClick = () => {
@@ -74,7 +76,6 @@ function CustomToolbar() {
                 <Grid item xs={3}>
                     <GridToolbarFilterButton />
                 </Grid>
-
                 <Grid item xs={3}>
                     <GridToolbarQuickFilter />
                 </Grid>
@@ -102,6 +103,7 @@ const formikValidationSchema = Yup.object().shape({
 });
 
 const ConsultasForm = () => {
+    const dispatch = useDispatch();
     const [rows, setRows] = useState([]);
     const [conveniadoInputValue, setConveniadoInputValue] = useState('');
     const [conveniadoOptions, setConveniadoOptions] = useState([]);
@@ -263,6 +265,8 @@ const ConsultasForm = () => {
             });
 
             batch.commit();
+            setRows([]);
+            dispatch(openDialog({ message: 'Consultas salvas com sucesso!' }));
         } catch (err) {
             console.error(err);
         } finally {
@@ -600,7 +604,7 @@ const ConsultasForm = () => {
                     </Paper>
                 </Grid>
             </Grid>
-            <ConsultaDialog />
+            <ConfirmationDialog />
         </ConsultaScheduleStyle>
     );
 };

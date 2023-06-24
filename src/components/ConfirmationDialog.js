@@ -29,15 +29,17 @@ export default function ConsultaDialog() {
             aria-describedby="alert-dialog-description"
         >
             <DialogTitle id="alert-dialog-title">
-                <Typography>Alerta</Typography>
+                <Typography variant="subtitle1">Aviso</Typography>
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {dialogState.message}
+                    <Typography variant="body1" component="span">
+                        {dialogState.message}
+                    </Typography>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="outlined" color="error" onClick={handleClose}>
+                <Button variant="contained" onClick={handleClose}>
                     Fechar
                 </Button>
             </DialogActions>
