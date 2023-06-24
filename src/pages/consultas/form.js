@@ -26,7 +26,7 @@ import {
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { query, where, collection, getDocs, doc, writeBatch } from 'firebase/firestore';
+import { query, where, collection, getDocs, doc, writeBatch, Timestamp } from 'firebase/firestore';
 import { debounce } from 'lodash';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
@@ -119,7 +119,17 @@ const ConsultasForm = () => {
             minWidth: 80,
             renderCell: (params) => <RemoveButton rowId={params.id} setRows={setRows} rows={rows} />
         },
-        { field: 'dataConsulta', type: 'date', headerName: 'Data', minWidth: 150 },
+        {
+            field: 'dataConsulta',
+            type: 'date',
+            headerName: 'Data',
+            minWidth: 150,
+            valueFormatter: (params) => {
+                const convertedDate = params.value.toDate();
+
+                return dayjs(convertedDate).format('DD/MM/YYYY');
+            }
+        },
         { field: 'horaConsulta', type: 'string', headerName: 'Inicio', minWidth: 150 },
         { field: 'tempoConsulta', type: 'string', headerName: 'Duração', minWidth: 150 },
         { field: 'especialidade', headerName: 'Especialidade', minWidth: 200 }
@@ -160,13 +170,13 @@ const ConsultasForm = () => {
             try {
                 let professionais = [];
 
-                setProfissioanisLoading(true);
+                setProfissionalLoading(true);
 
                 const profissionaisRef = collection(db, 'users');
                 const profissionaisQuery = query(
                     profissionaisRef,
-                    where('identificacao', '>=', profissionalInputValue),
-                    where('identificacao', '<=', profissionalInputValue + '\uf8ff')
+                    where('identificacaoProfissional', '>=', profissionalInputValue),
+                    where('identificacaoProfissional', '<=', profissionalInputValue + '\uf8ff')
                 );
                 const queryResult = await getDocs(profissionaisQuery);
 
@@ -206,31 +216,37 @@ const ConsultasForm = () => {
                 logradouro,
                 planos
             },
-            profissional: { nome: nomeProfissional },
+            profissional: { nome: nomeProfissional, sobrenome: sobrenomeProfissional },
             especialidade,
             tempoConsulta,
             horaConsulta,
             dataConsulta
         } = values;
 
+        const newDataConsulta = dayjs(dataConsulta)
+            .set('hour', horaConsulta.split(':')[0])
+            .set('minute', horaConsulta.split(':')[1])
+            .toDate();
+
         const newConsulta = {
+            id: rows.length + 1,
             conveniado: nomeConveniado,
             numeroEndereco,
             bairro,
             cidade,
             estado,
             logradouro,
-            profissional: nomeProfissional,
+            profissional: `${nomeProfissional} ${sobrenomeProfissional}`,
             especialidade,
             tempoConsulta,
             horaConsulta,
-            dataConsulta,
+            dataConsulta: Timestamp.fromDate(newDataConsulta),
             disponivel: true,
             planos
         };
 
         setRows([...rows, newConsulta]);
-        setSubmitting(true);
+        setSubmitting(false);
     };
 
     const handleSave = async () => {
@@ -240,8 +256,10 @@ const ConsultasForm = () => {
             const batch = writeBatch(db);
 
             rows.forEach((row) => {
-                const consultasRef = doc(db, 'consultas');
-                batch.set(consultasRef, row);
+                const consultaRef = doc(collection(db, 'consultas'));
+                const newConsulta = { ...row, id: consultaRef.id };
+
+                batch.set(consultaRef, newConsulta);
             });
 
             batch.commit();
@@ -382,9 +400,13 @@ const ConsultasForm = () => {
                                                             inputValue={profissionalInputValue}
                                                             filterOptions={(x) => x}
                                                             options={profissionalOptions}
-                                                            getOptionLabel={(option) =>
-                                                                option.nome || ''
-                                                            }
+                                                            getOptionLabel={(option) => {
+                                                                if (option.nome) {
+                                                                    return `${option.nome} ${option.sobrenome}`;
+                                                                }
+
+                                                                return '';
+                                                            }}
                                                             renderInput={(params) => (
                                                                 <TextField
                                                                     {...params}
@@ -451,7 +473,7 @@ const ConsultasForm = () => {
                                                         name="dataConsulta"
                                                         label="Data de Nascimento"
                                                         onBlur={handleBlur}
-                                                        value={values.dataConsulta}
+                                                        value={dayjs(values.dataConsulta)}
                                                         format="DD/MM/YYYY"
                                                         onChange={(value) => {
                                                             setFieldValue(
