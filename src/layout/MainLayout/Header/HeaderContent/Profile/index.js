@@ -60,16 +60,14 @@ const Profile = () => {
     const user = useSelector((state) => state.user);
     const theme = useTheme();
     const anchorRef = useRef(null);
-    const [signOut, loading] = useSignOut(auth);
+    const [signOut] = useSignOut(auth);
     const [open, setOpen] = useState(false);
 
     const handleLogout = async () => {
-        const result = await signOut();
+        navigate('/login', { replace: true });
+        dispatch(clearUser());
 
-        if (loading && result) {
-            dispatch(clearUser());
-            navigate('/login', { replace: true });
-        }
+        await signOut();
     };
 
     const handleToggle = () => {
